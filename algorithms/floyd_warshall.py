@@ -37,17 +37,17 @@ def get_ultrametric_network_edges(
             if i == j:
                 continue
             if W_star[i][j] == distance_matrix[i][j]:
-                if f"{vertices[j]}, {vertices[i]}" not in ultrametric_network.keys():
-                    ultrametric_network[f"{vertices[i]}, {vertices[j]}"] = W_star[i][j]
+                if f"{vertices[j]},{vertices[i]}" not in ultrametric_network.keys():
+                    ultrametric_network[f"{vertices[i]},{vertices[j]}"] = W_star[i][j]
 
             if threshold > 0:
                 if (W_star[i][j] + threshold) >= distance_matrix[i][j]:
                     if (
-                        f"{vertices[j]}, {vertices[i]}"
+                        f"{vertices[j]},{vertices[i]}"
                         not in ultrametric_network_delta.keys()
                     ):
                         ultrametric_network_delta[
-                            f"{vertices[i]}, {vertices[j]}"
+                            f"{vertices[i]},{vertices[j]}"
                         ] = W_star[i][j]
 
         continue
