@@ -15,15 +15,22 @@ Description: The adapted Floyd-Warshall algorithm computes the largest ultrametr
 import copy
 
 
-def get_ultrametric_edges(
-    number_of_vertices: int,
-    W_star: list,
+def get_ultrametric_network_edges(
     distance_matrix: list,
     vertices: list,
-    threshold,
+    threshold: int = 0,
 ) -> tuple:
+    """
+    returns a tuple of dictionaries which contains the edges of an ultrametric network as keys
+    and its weight as its values.
+    """
+
     ultrametric_network = {}
     ultrametric_network_delta = {}
+
+    number_of_vertices = len(vertices)
+
+    W_star = compute_distance_matrix(distance_matrix, number_of_vertices)
 
     for i in range(number_of_vertices):
         for j in range(number_of_vertices):
@@ -48,15 +55,12 @@ def get_ultrametric_edges(
     return ultrametric_network, ultrametric_network_delta
 
 
-def floyd_warshall_ultrametric_network(
-    distance_matrix: list, vertices: list, threshold: int = 0
-) -> tuple:
+def compute_distance_matrix(distance_matrix: list, number_of_vertices: int) -> list:
     """
-    This function returns a list which is the resultant distance matrix for the ultrametric network,
+    function returns a list which is the resultant distance matrix for the ultrametric network,
     which is obtained after computing the given distance matrix using adapted Floyd-Warshall algorithm.
-    The function also returns a dictionary that has ultrametrix edge as the key and its weight as value.
     """
-    number_of_vertices = len(vertices)
+
     distance_tables = [distance_matrix]
 
     for k in range(number_of_vertices):
@@ -80,11 +84,7 @@ def floyd_warshall_ultrametric_network(
 
     W_star = distance_tables[-1]
 
-    ultrametric_network, ultrametric_network_delta = get_ultrametric_edges(
-        number_of_vertices, W_star, distance_matrix, vertices, threshold
-    )
-
-    return W_star, ultrametric_network, ultrametric_network_delta
+    return W_star
 
 
 if __name__ == "__main__":
@@ -130,15 +130,9 @@ if __name__ == "__main__":
         },
     }
 
-    (
-        W_star,
-        ultrametric_network,
-        ultrametric_network_delta,
-    ) = floyd_warshall_ultrametric_network(
-        test_values["test_3"]["distance_matrix"],
-        test_values["test_3"]["vertices"],
+    ultrametric_network, ultrametric_network_delta = get_ultrametric_edges(
+        test_values["test_3"]["distance_matrix"], test_values["test_3"]["vertices"]
     )
 
-    print(f"{W_star = }")
     print(f"{ultrametric_network = }")
     print(f"{ultrametric_network_delta = }")
