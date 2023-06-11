@@ -1,7 +1,13 @@
+"""
+Author: Ebin Paul
+"""
+
 import re
 
 
-def get_distance_block(filepath):
+def get_distance_block(filepath: str) -> tuple:
+    distance_matrix, vertices = None, None
+
     with open(filepath, "r") as file:
         nexus_content = file.read()
 
@@ -30,10 +36,7 @@ def get_distance_block(filepath):
 
                 distance_matrix.append([float(x) for x in distance_data])
 
-            print(f"{distance_matrix = }")
-            print(f"{vertices = }")
-
-            return distance_matrix, vertices
-
     else:
         print("Distance block not found.")
+
+    return distance_matrix, vertices
