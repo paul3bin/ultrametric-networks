@@ -17,10 +17,12 @@ Description: This Python script provides a function for parsing the distance blo
 import re
 
 
-def get_distance_block(filepath: str) -> tuple:
+def get_distance_block(file_path: str) -> tuple:
+    # initialising the variables for distance matrix and vertices as None
     distance_matrix, vertices = None, None
 
-    with open(filepath, "r") as file:
+    # opening the file using the path received in read mode.
+    with open(file_path, "r") as file:
         nexus_content = file.read()
 
     # Use regular expressions to extract the distance block
@@ -29,15 +31,19 @@ def get_distance_block(filepath: str) -> tuple:
 
     if distance_block_match:
         distance_block = distance_block_match.group(1)
+
+        # Use regular expressions to extract the matrix from distance block
         matrix_pattern = r"(?i)MATRIX\n([\s\S]*)(.+?);"
         matrix_match = re.search(matrix_pattern, distance_block, re.DOTALL)
 
+        # checking if matrix is found from the block
         if matrix_match:
             # splitting the data based on new-line character
             matrix_data = matrix_match.group(1).split("\n")
 
             distance_matrix = []
             vertices = []
+
             for data in matrix_data:
                 distance_data = list(filter(lambda x: x != "", data.split(" ")[1:]))
 
@@ -46,6 +52,7 @@ def get_distance_block(filepath: str) -> tuple:
                 vertex = vertex.replace("'", "")
                 vertices.append(vertex)
 
+                # converting the matrix values from list to float and appending to the list
                 distance_matrix.append([float(x) for x in distance_data])
 
     else:
