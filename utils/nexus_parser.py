@@ -1,5 +1,17 @@
 """
 Author: Ebin Paul
+
+Description: This Python script provides a function for parsing the distance block from a Nexus (.nex) file. 
+            The Nexus file format is commonly used in phylogenetic analysis to store and exchange data.
+            The get_distance_block function takes the filepath of the Nexus file as input and returns a tuple 
+            containing the distance matrix and the list of vertices. The script utilizes regular expressions 
+            to extract the distance block from the Nexus file, which is typically enclosed between the 
+            "BEGIN DISTANCES;" and "END;" tags. Within the distance block, it searches for the "MATRIX" section, 
+            which contains the actual distance data. The distance matrix is extracted by splitting the data based 
+            on the new-line character and parsing each line. The vertex names are retrieved from the list 
+            and appended to the vertices list, while the distance values are converted to floats and stored 
+            in the distance_matrix list. If the distance block or matrix is not found within the Nexus file,
+            an appropriate message is displayed.
 """
 
 import re
