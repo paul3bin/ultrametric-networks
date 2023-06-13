@@ -2,9 +2,10 @@
 Author: Ebin Paul
 """
 
+import os
+
 import matplotlib.pyplot as plt
 import networkx as nx
-import os
 
 from algorithms.floyd_warshall import get_ultrametric_network_edges
 from utils.nexus_parser import get_distance_block
