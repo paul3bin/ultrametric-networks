@@ -15,7 +15,7 @@ Description: The adapted Floyd-Warshall algorithm computes the largest ultrametr
 import copy
 
 
-def get_ultrametric_network_edges(
+def get_network_edges(
     distance_matrix: list,
     vertices: list,
     threshold: int = 0,

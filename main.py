@@ -7,7 +7,7 @@ import os
 import matplotlib.pyplot as plt
 import networkx as nx
 
-from algorithms.floyd_warshall import get_ultrametric_network_edges
+from algorithms.floyd_warshall import get_network_edges
 from utils.nexus_parser import get_distance_block
 
 file_path = input("Enter file path: ")
@@ -16,7 +16,7 @@ file_path = input("Enter file path: ")
 if os.path.exists(file_path):
     distance_matrix, vertices = get_distance_block(file_path)
 
-    ultrametric_network, ultrametric_network_delta = get_ultrametric_network_edges(
+    ultrametric_network, ultrametric_network_delta = get_network_edges(
         distance_matrix, vertices
     )
 
