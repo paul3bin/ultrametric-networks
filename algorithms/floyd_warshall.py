@@ -38,7 +38,9 @@ def get_network_edges(
                 continue
             if W_star[i][j] == distance_matrix[i][j]:
                 if f"{vertices[j]},{vertices[i]}" not in ultrametric_network.keys():
-                    ultrametric_network[f"{vertices[i]},{vertices[j]}"] = W_star[i][j]
+                    ultrametric_network[f"{vertices[i]},{vertices[j]}"] = round(
+                        W_star[i][j], 3
+                    )
 
             if threshold > 0:
                 if (W_star[i][j] + threshold) >= distance_matrix[i][j]:
@@ -48,7 +50,7 @@ def get_network_edges(
                     ):
                         ultrametric_network_delta[
                             f"{vertices[i]},{vertices[j]}"
-                        ] = W_star[i][j]
+                        ] = round(W_star[i][j], 3)
 
         continue
 
@@ -130,7 +132,7 @@ if __name__ == "__main__":
         },
     }
 
-    ultrametric_network, ultrametric_network_delta = get_ultrametric_edges(
+    ultrametric_network, ultrametric_network_delta = get_network_edges(
         test_values["test_3"]["distance_matrix"], test_values["test_3"]["vertices"]
     )
 
