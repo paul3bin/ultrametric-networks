@@ -1,7 +1,7 @@
 """
-Author: Ebin Paul
+AUTHOR: Ebin Paul
 
-Description: This Python script provides a function for parsing the distance block from a Nexus (.nex) file. 
+DESCRIPTION: This Python script provides a function for parsing the distance block from a Nexus (.nex) file. 
             The Nexus file format is commonly used in phylogenetic analysis to store and exchange data.
             The get_distance_block function takes the filepath of the Nexus file as input and returns a tuple 
             containing the distance matrix and the list of vertices. The script utilizes regular expressions 
@@ -12,6 +12,11 @@ Description: This Python script provides a function for parsing the distance blo
             and appended to the vertices list, while the distance values are converted to floats and stored 
             in the distance_matrix list. If the distance block or matrix is not found within the Nexus file,
             an appropriate message is displayed.
+
+REFERENCES:
+    - https://en.wikipedia.org/wiki/Regular_expression
+    - https://docs.python.org/3/library/re.html
+    - https://developers.google.com/edu/python/regular-expressions
 """
 
 import re

@@ -1,7 +1,7 @@
 """
-Author: Ebin Paul
+AUTHOR: Ebin Paul
 
-Description: The adapted Floyd-Warshall algorithm computes the largest ultrametric denoted as W∗, 
+DESCRIPTION: The adapted Floyd-Warshall algorithm computes the largest ultrametric denoted as W∗, 
              which is dominated by an input ultrametric W. W∗ assigns zero distance to self-loops 
              and ensures that the distance between any two vertices is not greater than the maximum 
              distance from either vertex to a third vertex. The algorithm constructs the ultrametric 

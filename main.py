@@ -1,16 +1,21 @@
 """
-Author: Ebin Paul
+AUTHOR: Ebin Paul
+
 """
 
 import os
 
-import matplotlib.pyplot as plt
-import networkx as nx
-
 from algorithms.floyd_warshall import get_network_edges
 from utils.nexus_parser import get_distance_block
+from utils.visualizer import VisualiseNetwork
 
-file_path = input("Enter file path: ")
+# file_path = input("Enter file path: ")
+# file_path = r"C:\Users\ebinp\Downloads\test_nexus\algae.nex"
+# file_path = r"C:\Users\ebinp\Downloads\test_nexus\dolphins_binary.nex"
+file_path = r"C:\Users\ebinp\Downloads\test_nexus\coronavirus.fasta.nex"
+# file_path = r"C:\Users\ebinp\Downloads\test_nexus\rubber.nex"
+
+title = file_path.split("\\")[-1].split(".")[0]
 
 # verifying if file path exists
 if os.path.exists(file_path):
@@ -22,44 +27,9 @@ if os.path.exists(file_path):
 
     print(f"{ultrametric_network = }")
 
-    # intitalizing the graph for creating network
-    network = nx.Graph()
+    network = VisualiseNetwork(vertices, ultrametric_network, title)
 
-    # adding nodes/vertices to the graph
-    network.add_nodes_from(vertices)
-
-    # adding the edges to graph with weights
-    for key in ultrametric_network:
-        nodes = key.split(",")
-        network.add_edge(nodes[0], nodes[1], weight=ultrametric_network[key])
-
-    # defining the positions of nodes using layout functions
-    positions = nx.spring_layout(network)
-
-    # positions = nx.random_layout(network)
-    # positions = nx.shell_layout(network)
-    # positions = nx.circular_layout(network)
-    # positions = nx.planar_layout(network)
-
-    # extracting the edge weights
-    edge_weights = nx.get_edge_attributes(network, "weight")
-
-    # plotting the graph
-    nx.draw_networkx(
-        network,
-        positions,
-        with_labels=True,
-        node_color="lightblue",
-        node_size=500,
-        font_size=12,
-        font_weight="bold",
-    )
-    nx.draw_networkx_edges(network, positions, width=2)
-    nx.draw_networkx_edge_labels(network, positions, edge_labels=edge_weights)
-
-    # displaying the network
-    plt.axis("off")
-    plt.show()
+    network.display()
 
 else:
     print("File does not exist!")
