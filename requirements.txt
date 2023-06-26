@@ -1,3 +1,4 @@
+altgraph==0.17.3
 asttokens==2.2.1
 backcall==0.2.0
 black==23.3.0
@@ -18,15 +19,21 @@ numpy==1.25.0
 packaging==23.1
 parso==0.8.3
 pathspec==0.11.1
+pefile==2023.2.7
 pickleshare==0.7.5
 platformdirs==3.8.0
+plotly==5.15.0
 prompt-toolkit==3.0.38
 pure-eval==0.2.2
 Pygments==2.15.1
+pyinstaller==5.13.0
+pyinstaller-hooks-contrib==2023.3
 pyvis==0.3.2
+pywin32-ctypes==0.2.1
 PyYAML==6.0
 six==1.16.0
 stack-data==0.6.2
+tenacity==8.2.2
 tomli==2.0.1
 traitlets==5.9.0
 wcwidth==0.2.6
