@@ -58,7 +58,7 @@ class VisualiseNetwork:
         # Display the plot
         network.show(f"{self.title}.html", notebook=False)
 
-    def export_to_image(self, layout_type: str):
+    def save_as_image(self, layout_type: str):
         # intialising dictionary with key, value pairs of different layouts
         layout = {
             "random": nx.random_layout,
@@ -156,5 +156,5 @@ class VisualiseNetwork:
 
         fig.write_image(f"../images/{self.title}.png")
 
-    def export_to_pdf(self):
+    def save_as_pdf(self):
         pass
