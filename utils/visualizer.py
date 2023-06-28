@@ -16,6 +16,7 @@ REFERENCES:
     - https://towardsdatascience.com/pyvis-visualize-interactive-network-graphs-in-python-77e059791f01
     - https://towardsdatascience.com/tutorial-network-visualization-basics-with-networkx-and-plotly-and-a-little-nlp-57c9bbb55bb9
     - https://plotly.com/python/static-image-export/
+    - https://community.plotly.com/t/static-image-export-hangs-using-kaleido/61519/4
 """
 import os
 
@@ -25,7 +26,23 @@ import pyvis.network as net
 
 
 class VisualiseNetwork:
-    def __init__(self, vertices: list, ultrametric_network: dict, title: str):
+    # intialising class variable which is a dictionary
+    # with key-value pairs of different layouts
+    layout = {
+        "random": nx.random_layout,
+        "spring": nx.spring_layout,
+        "shell": nx.shell_layout,
+        "circular": nx.circular_layout,
+        "planar": nx.planar_layout,
+    }
+
+    def __init__(
+        self,
+        vertices: list,
+        ultrametric_network: dict,
+        title: str,
+        layout_type: str = "spring",
+    ):
         self.vertices = vertices
         self.ultrametric_network = ultrametric_network
         self.title = title
@@ -43,6 +60,9 @@ class VisualiseNetwork:
                 nodes[0], nodes[1], weight=self.ultrametric_network[key]
             )
 
+        # defining the positions of nodes using layout functions
+        self.positions = self.layout[layout_type](self.graph)
+
     def display(self):
         # initialising a Pyvis network object
         network = net.Network(width="100%", directed=False)
@@ -58,19 +78,7 @@ class VisualiseNetwork:
         # Display the plot
         network.show(f"{self.title}.html", notebook=False)
 
-    def save_as_image(self, layout_type: str):
-        # intialising dictionary with key, value pairs of different layouts
-        layout = {
-            "random": nx.random_layout,
-            "spring": nx.spring_layout,
-            "shell": nx.shell_layout,
-            "circular": nx.circular_layout,
-            "planar": nx.planar_layout,
-        }
-
-        # defining the positions of nodes using layout functions
-        positions = layout[layout_type](self.graph)
-
+    def export_to_file(self, file_type: str = "png"):
         # extracting the edge weights
         edge_weights = nx.get_edge_attributes(self.graph, "weight")
 
@@ -81,8 +89,8 @@ class VisualiseNetwork:
 
         # Iterate over each edge and add coordinates and labels
         for edge, weight in edge_weights.items():
-            x0, y0 = positions[edge[0]]
-            x1, y1 = positions[edge[1]]
+            x0, y0 = self.positions[edge[0]]
+            x1, y1 = self.positions[edge[1]]
             x_edges += [x0, x1, None]
             y_edges += [y0, y1, None]
             edge_labels.append(weight)
@@ -99,8 +107,8 @@ class VisualiseNetwork:
 
         # Add edge coordinates to the edge trace
         for edge in self.graph.edges():
-            x0, y0 = positions[edge[0]]
-            x1, y1 = positions[edge[1]]
+            x0, y0 = self.positions[edge[0]]
+            x1, y1 = self.positions[edge[1]]
             edge_trace["x"] += tuple([x0, x1, None])
             edge_trace["y"] += tuple([y0, y1, None])
 
@@ -121,7 +129,7 @@ class VisualiseNetwork:
 
         # Add node coordinates to the node trace
         for node in self.graph.nodes():
-            x, y = positions[node]
+            x, y = self.positions[node]
             node_trace["x"] += tuple([x])
             node_trace["y"] += tuple([y])
 
@@ -130,7 +138,7 @@ class VisualiseNetwork:
 
         # Customize figure layout
         fig.update_layout(
-            title=f"Ultrametric Network - {title}",
+            title=f"Ultrametric Network - {self.title}",
             title_x=0.5,
             showlegend=False,
             hovermode="closest",
@@ -151,10 +159,12 @@ class VisualiseNetwork:
             yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
         )
 
-        if not os.path.exists("../images"):
-            os.mkdir("../images")
+        try:
+            if not os.path.exists("output"):
+                os.mkdir("output")
 
-        fig.write_image(f"../images/{self.title}.png")
+            fig.write_image(f"output/{self.title}.{file_type}", format=file_type)
 
-    def save_as_pdf(self):
-        pass
+        except Exception as e:
+            print("Error occured while saving the result to a file.")
+            print(str(e))
