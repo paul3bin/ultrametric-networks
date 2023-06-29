@@ -180,3 +180,4 @@ pyrightconfig.json
 *.txt
 *.html
 misc
+output
