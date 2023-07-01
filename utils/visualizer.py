@@ -78,7 +78,7 @@ class VisualiseNetwork:
         # Display the plot
         network.show(f"{self.title}.html", notebook=False)
 
-    def export_to_file(self, file_type: str = "png"):
+    def export_to_file(self, file_type: str = "png", dpi: int = 300):
         # extracting the edge weights
         edge_weights = nx.get_edge_attributes(self.graph, "weight")
 
@@ -163,7 +163,13 @@ class VisualiseNetwork:
             if not os.path.exists("output"):
                 os.mkdir("output")
 
-            fig.write_image(f"output/{self.title}.{file_type}", format=file_type)
+            fig.write_image(
+                f"output/{self.title}.{file_type}",
+                format=file_type,
+                width=1200,
+                height=800,
+                scale=dpi / 72,
+            )
 
         except Exception as e:
             print("Error occured while saving the result to a file.")
