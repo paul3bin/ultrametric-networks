@@ -73,7 +73,7 @@ class VisualiseNetwork:
         # enabling the interactive feature of the visualisation
         network.toggle_drag_nodes(True)
 
-        # network.show_buttons(filter_=True)
+        network.show_buttons(filter_=True)
 
         # Display the plot
         network.show(f"{self.title}.html", notebook=False)
