@@ -57,7 +57,10 @@ class VisualiseNetwork:
         for key in self.ultrametric_network:
             nodes = key.split(",")
             self.graph.add_edge(
-                nodes[0], nodes[1], weight=self.ultrametric_network[key]
+                nodes[0],
+                nodes[1],
+                weight=self.ultrametric_network[key],
+                length=self.ultrametric_network[key],
             )
 
         # defining the positions of nodes using layout functions
@@ -65,7 +68,20 @@ class VisualiseNetwork:
 
     def display(self):
         # initialising a Pyvis network object
-        network = net.Network(width="100%", directed=False)
+        network = net.Network(
+            height="600px",
+            width="60%",
+            directed=False,
+            notebook=False,
+            neighborhood_highlight=False,
+            select_menu=False,
+            filter_menu=False,
+            bgcolor="#ffffff",
+            font_color=False,
+            layout=None,
+            heading=f"Ultrametric Network of {self.title}",
+            cdn_resources="local",
+        )
 
         # adding the nodes and edges to the network object
         network.from_nx(self.graph)
@@ -73,7 +89,7 @@ class VisualiseNetwork:
         # enabling the interactive feature of the visualisation
         network.toggle_drag_nodes(True)
 
-        network.show_buttons(filter_=True)
+        network.show_buttons(filter_=["edges"])
 
         # Display the plot
         network.show(f"{self.title}.html", notebook=False)
