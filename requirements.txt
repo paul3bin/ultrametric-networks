@@ -5,6 +5,7 @@ colorama==0.4.6
 decorator==5.1.1
 executing==1.2.0
 ipython==8.14.0
+isort==5.12.0
 jedi==0.18.2
 Jinja2==3.1.2
 jsonpickle==3.0.1
