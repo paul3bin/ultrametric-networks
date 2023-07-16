@@ -1,7 +1,12 @@
+import os
 import sys
+
+from algorithms.floyd_warshall import get_network_edges
 from PyQt5.QtWidgets import (
     QApplication,
     QComboBox,
+    QDialog,
+    QFileDialog,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -9,16 +14,17 @@ from PyQt5.QtWidgets import (
     QTextEdit,
     QVBoxLayout,
     QWidget,
-    QFileDialog,
 )
+from utils.nexus_parser import get_distance_block
+from utils.visualizer import VisualiseNetwork
+
+from .export_window import ExportVisualisationWindow
 
 
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.initiate_ui()
 
-    def initiate_ui(self):
         self.selected_file = None
 
         # File Information
@@ -29,8 +35,8 @@ class MainWindow(QWidget):
         # Algorithm Selection
         algorithm_label = QLabel("Algorithm:")
         algorithm_dropdown = QComboBox()
-        algorithm_dropdown.addItem("Algorithm 1")
-        algorithm_dropdown.addItem("Algorithm 2")
+        algorithm_dropdown.addItem("Floyd-Warshall")
+        algorithm_dropdown.addItem("UltraNet")
 
         # Algorithm Parameters
         threshold_label = QLabel("Threshold:")
@@ -40,19 +46,14 @@ class MainWindow(QWidget):
         self.run_button = QPushButton("Run/Execute")
         self.run_button.setEnabled(False)
 
-        # Choose Layout
-        layout_label = QLabel("Choose Layout:")
-        layout_dropdown = QComboBox()
-        layout_dropdown.addItem("Floyd-Warshall")
-        layout_dropdown.addItem("UltraNet")
-
         # Export/Save Button
-        self.export_button = QPushButton("Export/Save")
+        self.export_button = QPushButton("Export Network")
         self.export_button.setEnabled(False)
+        self.export_button.clicked.connect(self.open_export_window)
 
         # Reset/Clear Button
-        reset_button = QPushButton("Reset/Clear")
-        reset_button.clicked.connect(self.reset_action)
+        reset_button = QPushButton("Reset")
+        reset_button.clicked.connect(self.reset_application)
 
         # File Selection Button
         select_file_button = QPushButton("Select File")
@@ -75,20 +76,18 @@ class MainWindow(QWidget):
 
         vbox.addLayout(hbox2)
 
-        hbox3 = QHBoxLayout()
-        hbox3.addWidget(self.run_button)
-        hbox3.addWidget(layout_label)
-        hbox3.addWidget(layout_dropdown)
-
-        vbox.addLayout(hbox3)
-
         hbox4 = QHBoxLayout()
         hbox4.addWidget(self.export_button)
         hbox4.addWidget(reset_button)
+        hbox4.addWidget(select_file_button)
 
         vbox.addStretch(1)
         vbox.addLayout(hbox4)
-        vbox.addWidget(select_file_button)
+
+        hbox3 = QHBoxLayout()
+        hbox3.addWidget(self.run_button)
+
+        vbox.addLayout(hbox3)
 
         self.setLayout(vbox)
         self.setWindowTitle("UltraNet Viewer")
@@ -106,10 +105,14 @@ class MainWindow(QWidget):
         self.run_button.setEnabled(True)
         self.export_button.setEnabled(True)
 
-    def reset_action(self):
+    def reset_application(self):
         self.run_button.setEnabled(False)
         self.export_button.setEnabled(False)
         self.selected_file = None
+
+    def open_export_window(self):
+        export_window = ExportVisualisationWindow()
+        export_window.exec_()
 
 
 if __name__ == "__main__":
