@@ -1,6 +1,9 @@
 """
 AUTHOR: Ebin Paul
 
+REFERENCES: 
+    - https://www.geeksforgeeks.org/python-introduction-to-pyqt5/
+
 """
 
 import sys
