@@ -29,11 +29,11 @@ class VisualiseNetwork:
     # intialising class variable which is a dictionary
     # with key-value pairs of different layouts
     layout = {
-        "random": nx.random_layout,
-        "spring": nx.spring_layout,
-        "shell": nx.shell_layout,
-        "circular": nx.circular_layout,
-        "planar": nx.planar_layout,
+        "Random": nx.random_layout,
+        "Spring": nx.spring_layout,
+        "Shell": nx.shell_layout,
+        "Circular": nx.circular_layout,
+        "Planar": nx.planar_layout,
     }
 
     def __init__(
@@ -41,7 +41,7 @@ class VisualiseNetwork:
         vertices: list,
         ultrametric_network: dict,
         title: str,
-        layout_type: str = "spring",
+        layout_type: str = "Spring",
     ):
         self.vertices = vertices
         self.ultrametric_network = ultrametric_network
@@ -94,9 +94,18 @@ class VisualiseNetwork:
         # Display the plot
         network.show(f"{self.title}.html", notebook=False)
 
-    def export_to_file(self, file_type: str = "png", dpi: int = 300):
+    def export_to_file(
+        self,
+        file_path: str = "output.png",
+        layout: str = "Spring",
+        file_type: str = "png",
+        dpi: int = 300,
+    ):
         # extracting the edge weights
         edge_weights = nx.get_edge_attributes(self.graph, "weight")
+
+        # defining the positions of nodes using layout functions
+        self.positions = self.layout[layout](self.graph)
 
         # Create lists to store the coordinates and text labels for the edges
         x_edges = []
@@ -176,11 +185,8 @@ class VisualiseNetwork:
         )
 
         try:
-            if not os.path.exists("output"):
-                os.mkdir("output")
-
             fig.write_image(
-                f"output/{self.title}.{file_type}",
+                file_path,
                 format=file_type,
                 width=1200,
                 height=800,

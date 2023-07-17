@@ -14,6 +14,7 @@ REFERENCES:
 import os
 import sys
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QApplication,
     QComboBox,
@@ -34,14 +35,11 @@ from utils.visualizer import VisualiseNetwork
 
 from .alert_window import MessageBox
 from .export_window import ExportVisualisationWindow
-from PyQt5.QtCore import Qt
 
 
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
-
-        self.selected_file = None
         self.network = None
 
         # File Information
@@ -129,14 +127,45 @@ class MainWindow(QWidget):
                 error_message = MessageBox(
                     "Wrong file type",
                     "Selected file should be a nexus file",
-                    QMessageBox.Warning,  # Corrected icon enum value
+                    QMessageBox.Warning,
                     QMessageBox.Ok | QMessageBox.Cancel,
                 )
                 error_message.show()
                 self.reset_application()  # resetting the application to initial state
 
             else:
-                self.selected_file = file_path
+                title = file_path.split("\\")[-1].split(".")[0]
+                file_extension = file_path.split("\\")[-1].split(".")[1]
+
+                print(f"{file_extension = }")
+
+                # verifying if file path exists
+                if os.path.exists(file_path):
+                    distance_matrix, vertices = get_distance_block(file_path)
+
+                    ultrametric_network, ultrametric_network_delta = get_network_edges(
+                        distance_matrix, vertices
+                    )
+
+                    print(f"{ultrametric_network = }")
+
+                    # Creating an instance of VisualiseNetwork class
+                    # and assigning it as a instance variable
+                    self.network = VisualiseNetwork(
+                        vertices, ultrametric_network, title
+                    )
+
+                else:
+                    error_message = MessageBox(
+                        "File not found",
+                        "File does not exists!",
+                        QMessageBox.warning,
+                        QMessageBox.Ok | QMessageBox.Cancel,
+                    )
+                    self.reset_application()
+
+                    error_message.show()
+
                 self.enable_buttons()
 
     def enable_buttons(self):
@@ -146,43 +175,13 @@ class MainWindow(QWidget):
     def reset_application(self):
         self.run_button.setEnabled(False)
         self.export_button.setEnabled(False)
-        self.selected_file = None
 
     def open_export_window(self):
-        export_window = ExportVisualisationWindow()
+        export_window = ExportVisualisationWindow(self.network)
         export_window.exec_()
 
     def view_network(self):
-        file_path = self.selected_file
-        title = file_path.split("\\")[-1].split(".")[0]
-        file_extension = file_path.split("\\")[-1].split(".")[1]
-
-        print(f"{file_extension = }")
-
-        # verifying if file path exists
-        if os.path.exists(file_path):
-            distance_matrix, vertices = get_distance_block(file_path)
-
-            ultrametric_network, ultrametric_network_delta = get_network_edges(
-                distance_matrix, vertices
-            )
-
-            print(f"{ultrametric_network = }")
-
-            self.network = VisualiseNetwork(vertices, ultrametric_network, title)
-
-            self.network.display()
-
-        else:
-            error_message = MessageBox(
-                "File not found",
-                "File does not exists!",
-                QMessageBox.warning,
-                QMessageBox.Ok | QMessageBox.Cancel,
-            )
-            self.reset_application()
-
-            error_message.show()
+        self.network.display()
 
 
 if __name__ == "__main__":
