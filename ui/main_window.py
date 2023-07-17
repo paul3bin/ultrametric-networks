@@ -1,9 +1,32 @@
+"""
+AUTHOR: Ebin Paul
+
+DESCRIPTION:
+
+REFERENCES:
+    - https://www.geeksforgeeks.org/python-introduction-to-pyqt5/
+    - https://www.geeksforgeeks.org/pyqt5-setting-disabling-the-frame-of-combobox/
+    - https://www.geeksforgeeks.org/pyqt5-setting-font-to-line-editbox-item-of-non-editable-combobox/
+    - https://realpython.com/python-pyqt-gui-calculator/
+
+"""
+
 import os
 import sys
 
-from PyQt5.QtWidgets import (QApplication, QComboBox, QFileDialog, QHBoxLayout,
-                             QLabel, QLineEdit, QMessageBox, QPushButton,
-                             QTextEdit, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import (
+    QApplication,
+    QComboBox,
+    QFileDialog,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QMessageBox,
+    QPushButton,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
 
 from algorithms.floyd_warshall import get_network_edges
 from utils.nexus_parser import get_distance_block
@@ -11,6 +34,7 @@ from utils.visualizer import VisualiseNetwork
 
 from .alert_window import MessageBox
 from .export_window import ExportVisualisationWindow
+from PyQt5.QtCore import Qt
 
 
 class MainWindow(QWidget):
@@ -30,7 +54,9 @@ class MainWindow(QWidget):
         algorithm_dropdown = QComboBox()
         algorithm_dropdown.addItem("Floyd-Warshall")
         algorithm_dropdown.addItem("UltraNet")
-        algorithm_dropdown.setItemData(1, Qt.ItemFlags(Qt.ItemIsEnabled), Qt.ItemFlags)
+        algorithm_dropdown.setItemData(
+            1, Qt.ItemFlags(Qt.ItemIsEnabled), Qt.ItemDataRole.UserRole
+        )
 
         # Algorithm Parameters
         threshold_label = QLabel("Threshold:")
