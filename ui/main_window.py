@@ -11,23 +11,20 @@ REFERENCES:
 
 """
 
+# to-do
+# file information
+# - file size
+# - file name
+# - date created
+# - last modified
+
 import os
 import sys
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (
-    QApplication,
-    QComboBox,
-    QFileDialog,
-    QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QMessageBox,
-    QPushButton,
-    QTextEdit,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt5.QtWidgets import (QApplication, QComboBox, QFileDialog, QHBoxLayout,
+                             QLabel, QLineEdit, QMessageBox, QPushButton,
+                             QTextEdit, QVBoxLayout, QWidget)
 
 from algorithms.floyd_warshall import get_network_edges
 from utils.nexus_parser import get_distance_block

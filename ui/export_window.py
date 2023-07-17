@@ -5,15 +5,8 @@ AUTHOR: Ebin Paul
 
 import os
 
-from PyQt5.QtWidgets import (
-    QComboBox,
-    QDialog,
-    QFileDialog,
-    QLabel,
-    QMessageBox,
-    QPushButton,
-    QVBoxLayout,
-)
+from PyQt5.QtWidgets import (QComboBox, QDialog, QFileDialog, QLabel,
+                             QMessageBox, QPushButton, QVBoxLayout)
 
 from ui.alert_window import MessageBox
 from utils.visualizer import VisualiseNetwork
