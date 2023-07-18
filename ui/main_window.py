@@ -8,6 +8,7 @@ REFERENCES:
     - https://www.geeksforgeeks.org/pyqt5-setting-disabling-the-frame-of-combobox/
     - https://www.geeksforgeeks.org/pyqt5-setting-font-to-line-editbox-item-of-non-editable-combobox/
     - https://realpython.com/python-pyqt-gui-calculator/
+    - https://sabe.io/blog/python-get-file-details
     - https://stackoverflow.com/questions/1094841/get-human-readable-version-of-file-size
 
 """
@@ -114,7 +115,7 @@ class MainWindow(QWidget):
         file_size = os.path.getsize(file_path)
 
         # Define suffixes for file sizes (B: Bytes, KB: Kilobytes, MB: Megabytes, GB: Gigabytes, TB: Terabytes)
-        size_suffixes = ["B", "KB", "MB", "GB", "TB"]
+        size_suffixes = ("B", "KB", "MB", "GB", "TB")
 
         # Calculate the index based on the log of file_size to the base 1024
         # (this will give us the index corresponding to the appropriate size suffix)
