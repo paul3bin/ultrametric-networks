@@ -12,13 +12,6 @@ REFERENCES:
 
 """
 
-# to-do
-# file information
-# - file size
-# - file name
-# - date created
-# - last modified
-
 import os
 import sys
 from datetime import datetime
