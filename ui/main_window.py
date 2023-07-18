@@ -55,7 +55,7 @@ class MainWindow(QWidget):
         threshold_input = QLineEdit()
 
         # Run/Execute Button
-        self.run_button = QPushButton("Run/Execute")
+        self.run_button = QPushButton("View Ultrametric Network")
         self.run_button.setEnabled(False)
         self.run_button.clicked.connect(self.view_network)
 
