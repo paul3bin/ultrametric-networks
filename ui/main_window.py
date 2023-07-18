@@ -10,6 +10,7 @@ REFERENCES:
     - https://realpython.com/python-pyqt-gui-calculator/
     - https://sabe.io/blog/python-get-file-details
     - https://stackoverflow.com/questions/1094841/get-human-readable-version-of-file-size
+    - https://doc.qt.io/qtforpython-5/PySide2/QtGui/QIntValidator.html
 
 """
 
