@@ -79,7 +79,7 @@ class VisualiseNetwork:
             bgcolor="#ffffff",
             font_color=False,
             layout=None,
-            heading=f"Ultrametric Network of {self.title}",
+            # heading=f"Ultrametric Network of {self.title}",
             cdn_resources="local",
         )
 
@@ -163,7 +163,7 @@ class VisualiseNetwork:
 
         # Customize figure layout
         fig.update_layout(
-            title=f"Ultrametric Network - {self.title}",
+            # title=f"Ultrametric Network - {self.title}",
             title_x=0.5,
             showlegend=False,
             hovermode="closest",
