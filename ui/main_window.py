@@ -49,6 +49,7 @@ class MainWindow(QWidget):
         self.algorithm_dropdown.setItemData(
             1, Qt.ItemFlags(Qt.ItemIsEnabled), Qt.ItemDataRole.UserRole
         )
+        self.algorithm_dropdown.setEnabled(False)
 
         # Algorithm Parameters
         threshold_label = QLabel("Threshold:")
