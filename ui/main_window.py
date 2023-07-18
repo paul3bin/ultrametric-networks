@@ -19,9 +19,20 @@ from datetime import datetime
 from math import log
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (QApplication, QComboBox, QFileDialog, QHBoxLayout,
-                             QLabel, QLineEdit, QMessageBox, QPushButton,
-                             QTextEdit, QVBoxLayout, QWidget)
+from PyQt5.QtGui import QIntValidator
+from PyQt5.QtWidgets import (
+    QApplication,
+    QComboBox,
+    QFileDialog,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QMessageBox,
+    QPushButton,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
 
 from algorithms.floyd_warshall import get_network_edges
 from utils.nexus_parser import get_distance_block
@@ -53,7 +64,9 @@ class MainWindow(QWidget):
 
         # Algorithm Parameters
         threshold_label = QLabel("Threshold:")
-        threshold_input = QLineEdit()
+        self.threshold_input = QLineEdit()
+        self.threshold_input.setPlaceholderText("Enter a whole number")
+        self.threshold_input.setValidator(QIntValidator())
 
         # Run/Execute Button
         self.run_button = QPushButton("View Ultrametric Network")
@@ -86,7 +99,7 @@ class MainWindow(QWidget):
 
         hbox2 = QHBoxLayout()
         hbox2.addWidget(threshold_label)
-        hbox2.addWidget(threshold_input)
+        hbox2.addWidget(self.threshold_input)
 
         vbox.addLayout(hbox2)
 
@@ -211,6 +224,9 @@ class MainWindow(QWidget):
 
     def view_network(self):
         self.network.display()
+
+    def update_threshold(self):
+        pass
 
 
 if __name__ == "__main__":
