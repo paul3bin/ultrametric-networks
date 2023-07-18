@@ -8,6 +8,7 @@ REFERENCES:
     - https://www.geeksforgeeks.org/pyqt5-setting-disabling-the-frame-of-combobox/
     - https://www.geeksforgeeks.org/pyqt5-setting-font-to-line-editbox-item-of-non-editable-combobox/
     - https://realpython.com/python-pyqt-gui-calculator/
+    - https://stackoverflow.com/questions/1094841/get-human-readable-version-of-file-size
 
 """
 
@@ -20,6 +21,8 @@ REFERENCES:
 
 import os
 import sys
+from datetime import datetime
+from math import log
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QApplication, QComboBox, QFileDialog, QHBoxLayout,
@@ -41,8 +44,8 @@ class MainWindow(QWidget):
 
         # File Information
         file_info_label = QLabel("File Information")
-        file_info_textbox = QTextEdit()
-        file_info_textbox.setReadOnly(True)
+        self.file_info_textbox = QTextEdit()
+        self.file_info_textbox.setReadOnly(True)
 
         # Algorithm Selection
         algorithm_label = QLabel("Algorithm:")
@@ -78,7 +81,7 @@ class MainWindow(QWidget):
         # Layout
         vbox = QVBoxLayout()
         vbox.addWidget(file_info_label)
-        vbox.addWidget(file_info_textbox)
+        vbox.addWidget(self.file_info_textbox)
 
         hbox1 = QHBoxLayout()
         hbox1.addWidget(algorithm_label)
@@ -110,6 +113,38 @@ class MainWindow(QWidget):
         self.setGeometry(100, 100, 400, 400)
         self.show()
 
+    def load_file_details(self, file_path: str):
+        """
+        Loads the file details to the non-editable text box of the main window.
+        """
+        # getting the file size of the selected file
+        file_size = os.path.getsize(file_path)
+
+        # Define suffixes for file sizes (B: Bytes, KB: Kilobytes, MB: Megabytes, GB: Gigabytes, TB: Terabytes)
+        size_suffixes = ["B", "KB", "MB", "GB", "TB"]
+
+        # Calculate the index based on the log of file_size to the base 1024
+        # (this will give us the index corresponding to the appropriate size suffix)
+        index = min(
+            (int(log(file_size, 1024)) if file_size > 0 else 0), len(size_suffixes) - 1
+        )
+
+        # Convert the file size to the appropriate unit (B, KB, MB, GB, TB)
+        file_size /= 1024**index
+
+        # getting the timestamps and converting them to human-readable format
+        date_created = datetime.fromtimestamp(os.path.getctime(file_path))
+        last_modified = datetime.fromtimestamp(os.path.getmtime(file_path))
+
+        # Generating text string for the textbox
+        text = f"""File Path: {file_path}
+        \nFile Size: {file_size:.2f} {size_suffixes[index]} 
+        \nDate Created: {date_created.strftime('%Y-%m-%d %H:%M:%S')}
+        \nLast Modified: {last_modified.strftime('%Y-%m-%d %H:%M:%S')}"""
+
+        # setting the text to the textbox
+        self.file_info_textbox.setText(text)
+
     def open_file_dialog(self):
         file_dialog = QFileDialog()
         file_path, _ = file_dialog.getOpenFileName(self, "Choose Nexus File")
@@ -131,6 +166,8 @@ class MainWindow(QWidget):
                 self.reset_application()  # resetting the application to initial state
 
             else:
+                self.load_file_details(file_path)
+
                 title = file_path.split("\\")[-1].split(".")[0]
                 file_extension = file_path.split("\\")[-1].split(".")[1]
 
