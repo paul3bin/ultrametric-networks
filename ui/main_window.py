@@ -43,10 +43,10 @@ class MainWindow(QWidget):
 
         # Algorithm Selection
         algorithm_label = QLabel("Algorithm:")
-        algorithm_dropdown = QComboBox()
-        algorithm_dropdown.addItem("Floyd-Warshall")
-        algorithm_dropdown.addItem("UltraNet")
-        algorithm_dropdown.setItemData(
+        self.algorithm_dropdown = QComboBox()
+        self.algorithm_dropdown.addItem("Floyd-Warshall")
+        self.algorithm_dropdown.addItem("UltraNet")
+        self.algorithm_dropdown.setItemData(
             1, Qt.ItemFlags(Qt.ItemIsEnabled), Qt.ItemDataRole.UserRole
         )
 
@@ -79,7 +79,7 @@ class MainWindow(QWidget):
 
         hbox1 = QHBoxLayout()
         hbox1.addWidget(algorithm_label)
-        hbox1.addWidget(algorithm_dropdown)
+        hbox1.addWidget(self.algorithm_dropdown)
 
         vbox.addLayout(hbox1)
 
