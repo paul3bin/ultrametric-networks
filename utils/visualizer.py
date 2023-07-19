@@ -40,7 +40,7 @@ class VisualiseNetwork:
         self,
         vertices: list,
         ultrametric_network: dict,
-        title: str,
+        title: str = "Ultrametric Network",
         layout_type: str = "Spring",
     ):
         self.vertices = vertices
