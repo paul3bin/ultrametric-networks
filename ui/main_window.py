@@ -21,19 +21,9 @@ from math import log
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWidgets import (
-    QApplication,
-    QComboBox,
-    QFileDialog,
-    QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QMessageBox,
-    QPushButton,
-    QTextEdit,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt5.QtWidgets import (QApplication, QComboBox, QFileDialog, QHBoxLayout,
+                             QLabel, QLineEdit, QMessageBox, QPushButton,
+                             QTextEdit, QVBoxLayout, QWidget)
 
 from algorithms.floyd_warshall import get_network_edges
 from utils.nexus_parser import get_distance_block
@@ -75,6 +65,7 @@ class MainWindow(QWidget):
         self.threshold_input = QLineEdit()
         self.threshold_input.setPlaceholderText("Enter a whole number")
         self.threshold_input.setValidator(QIntValidator())
+        self.threshold_input.setEnabled(False)
         self.threshold_input.textChanged.connect(self.update_threshold)
 
         # Run/Execute Button
@@ -129,6 +120,36 @@ class MainWindow(QWidget):
         self.setWindowTitle("UltraNet Viewer")
         self.setGeometry(100, 100, 400, 400)
         self.show()
+
+    def update_network(self):
+        (
+            self.ultrametric_network,
+            self.ultrametric_network_delta,
+        ) = get_network_edges(self.distance_matrix, self.vertices, self.threshold)
+
+        if self.threshold > 0:
+            # Creating an instance of VisualiseNetwork class
+            # and assigning it as a instance variable
+            self.network = VisualiseNetwork(
+                self.vertices, self.ultrametric_network_delta
+            )
+
+        else:
+            self.network = VisualiseNetwork(self.vertices, self.ultrametric_network)
+
+    def update_threshold(self):
+        try:
+            if self.threshold_input.text():
+                self.threshold = int(self.threshold_input.text())
+            else:
+                self.threshold = 0
+
+            print(f"{self.threshold_input.text() = }")
+            print(f"{self.threshold = }")
+            self.update_network()
+        except ValueError:
+            # If the user enters a non-integer value, set the threshold to 0
+            self.threshold = 0
 
     def load_file_details(self, file_path: str):
         """
@@ -194,6 +215,8 @@ class MainWindow(QWidget):
                 if os.path.exists(file_path):
                     # calling the nexus parser to obtain distance matrix and list of vertices
                     self.distance_matrix, self.vertices = get_distance_block(file_path)
+                    # updating the network instance variable
+                    self.update_network()
 
                 else:
                     error_message = MessageBox(
@@ -206,15 +229,20 @@ class MainWindow(QWidget):
 
                     error_message.show()
 
-                self.enable_buttons()
+                self.enable_widgets()
 
-    def enable_buttons(self):
+    def enable_widgets(self):
+        """
+        the method enables the run, export buttons and threshold field
+        """
         self.run_button.setEnabled(True)
         self.export_button.setEnabled(True)
+        self.threshold_input.setEnabled(True)
 
     def reset_application(self):
         self.run_button.setEnabled(False)
         self.export_button.setEnabled(False)
+        self.threshold_input.setEnabled(False)
         self.network = None
         self.threshold = 0
         self.distance_matrix = None
@@ -223,50 +251,12 @@ class MainWindow(QWidget):
         self.ultrametric_network_delta = None
 
     def open_export_window(self):
-        if not self.ultrametric_network or not self.ultrametric_network_delta:
-            (
-                self.ultrametric_network,
-                self.ultrametric_network_delta,
-            ) = get_network_edges(self.distance_matrix, self.vertices, self.threshold)
-
-            if self.threshold > 0:
-                # Creating an instance of VisualiseNetwork class
-                # and assigning it as a instance variable
-                self.network = VisualiseNetwork(
-                    self.vertices, self.ultrametric_network_delta
-                )
-
-            else:
-                self.network = VisualiseNetwork(self.vertices, self.ultrametric_network)
-
         export_window = ExportVisualisationWindow(self.network)
         export_window.exec_()
 
     def view_network(self):
-        if not self.ultrametric_network or not self.ultrametric_network_delta:
-            (
-                self.ultrametric_network,
-                self.ultrametric_network_delta,
-            ) = get_network_edges(self.distance_matrix, self.vertices, self.threshold)
-
-            if self.threshold > 0:
-                # Creating an instance of VisualiseNetwork class
-                # and assigning it as a instance variable
-                self.network = VisualiseNetwork(
-                    self.vertices, self.ultrametric_network_delta
-                )
-
-            else:
-                self.network = VisualiseNetwork(self.vertices, self.ultrametric_network)
-
+        # uses the object of NetworkVisualiser class to view network
         self.network.display()
-
-    def update_threshold(self):
-        try:
-            self.threshold = int(self.threshold_input.text())
-        except ValueError:
-            # If the user enters a non-integer value, set the threshold to 0
-            self.threshold = 0
 
 
 if __name__ == "__main__":
