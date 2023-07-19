@@ -91,6 +91,8 @@ class VisualiseNetwork:
 
         network.show_buttons(filter_=["edges"])
 
+        network.toggle_physics(False)
+
         # Display the plot
         network.show(f"{self.title}.html", notebook=False)
 
