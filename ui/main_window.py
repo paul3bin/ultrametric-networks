@@ -1,7 +1,9 @@
 """
 AUTHOR: Ebin Paul
 
-DESCRIPTION:
+DESCRIPTION: The MainWindow class represents the main graphical user interface (GUI) window 
+             of the "UltraNet Viewer" application. The window provides various features for 
+             loading, analyzing, and exporting network data represented in Nexus format.
 
 REFERENCES:
     - https://www.geeksforgeeks.org/python-introduction-to-pyqt5/
