@@ -23,6 +23,36 @@ import re
 
 
 def get_distance_block(file_path: str) -> tuple:
+    """
+    Extracts the distance matrix and vertices from a Nexus file containing a distance block.
+
+    The function reads the contents of the Nexus file specified by `file_path`, extracts the distance
+    block using regular expressions, and then parses the distance matrix and vertices from the block.
+
+    Parameters:
+        file_path (str): The path to the Nexus file containing the distance block.
+
+    Returns:
+        tuple: A tuple containing two elements - the distance matrix as a list of lists (2D list) of floats,
+               and the vertices as a list of strings. The first element contains the distances between the
+               vertices, and the second element contains the names of the vertices.
+
+    Raises:
+        Exception: If the distance block is not found in the Nexus file.
+        ValueError: If there is an issue converting the distance values to float.
+
+    Note:
+        The Nexus file must have a distance block in the following format:
+
+        BEGIN DISTANCES;
+        MATRIX
+          <distance data>
+        ;
+        END;
+
+        where <distance data> represents the distance matrix in the Nexus file.
+    """
+
     # initialising the variables for distance matrix and vertices as None
     distance_matrix, vertices = None, None
 
@@ -58,9 +88,13 @@ def get_distance_block(file_path: str) -> tuple:
                 vertices.append(vertex)
 
                 # converting the matrix values from list to float and appending to the list
-                distance_matrix.append([float(x) for x in distance_data])
+                try:
+                    distance_values = [float(x) for x in distance_data]
+                except ValueError:
+                    raise ValueError("Error converting distance values to float.")
+
+                distance_matrix.append(distance_values)
 
             return distance_matrix, vertices
 
-    else:
-        raise Exception("Distance block not found.")
+    raise Exception("Distance block not found.")
