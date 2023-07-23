@@ -124,6 +124,7 @@ class MainWindow(QWidget):
         self.show()
 
     def update_network(self):
+        """Update the ultrametric network based on the threshold value."""
         (
             self.ultrametric_network,
             self.ultrametric_network_delta,
@@ -140,6 +141,10 @@ class MainWindow(QWidget):
             self.network = VisualiseNetwork(self.vertices, self.ultrametric_network)
 
     def update_threshold(self):
+        """
+        Update the threshold value and trigger the update of the ultrametric network.
+        If the user enters a non-integer value, set the threshold to 0.
+        """
         try:
             if self.threshold_input.text():
                 self.threshold = int(self.threshold_input.text())
@@ -156,6 +161,9 @@ class MainWindow(QWidget):
     def load_file_details(self, file_path: str):
         """
         Loads the file details to the non-editable text box of the main window.
+
+        Args:
+            file_path (str): The path of the selected file.
         """
         # getting the file size of the selected file
         file_size = os.path.getsize(file_path)
@@ -186,6 +194,9 @@ class MainWindow(QWidget):
         self.file_info_textbox.setText(text)
 
     def open_file_dialog(self):
+        """
+        Open a file dialog to choose a Nexus file and process the selected file.
+        """
         file_dialog = QFileDialog()
         file_path, _ = file_dialog.getOpenFileName(self, "Choose Nexus File")
         if file_path:
@@ -234,14 +245,13 @@ class MainWindow(QWidget):
                 self.enable_widgets()
 
     def enable_widgets(self):
-        """
-        the method enables the run, export buttons and threshold field
-        """
+        """Enable the run, export buttons, and threshold field."""
         self.run_button.setEnabled(True)
         self.export_button.setEnabled(True)
         self.threshold_input.setEnabled(True)
 
     def reset_application(self):
+        """Resets the application to its initial state."""
         self.run_button.setEnabled(False)
         self.export_button.setEnabled(False)
         self.threshold_input.setEnabled(False)
@@ -254,15 +264,10 @@ class MainWindow(QWidget):
         self.file_info_textbox.setText("")
 
     def open_export_window(self):
+        """Open the export visualization window."""
         export_window = ExportVisualisationWindow(self.network)
         export_window.exec_()
 
     def view_network(self):
-        # uses the object of NetworkVisualiser class to view network
+        """Use the object of NetworkVisualiser class to view the network."""
         self.network.display()
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    main_window = MainWindow()
-    sys.exit(app.exec_())
