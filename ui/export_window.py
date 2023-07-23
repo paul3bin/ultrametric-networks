@@ -11,7 +11,9 @@ REFERENCES:
     - https://www.pythonguis.com/docs/qcombobox/
 """
 
+
 import os
+from enum import Enum
 
 from PyQt5.QtWidgets import (QComboBox, QDialog, QFileDialog, QHBoxLayout,
                              QLabel, QMessageBox, QPushButton, QVBoxLayout)
@@ -20,67 +22,100 @@ from ui.alert_window import MessageBox
 from utils.visualizer import VisualiseNetwork
 
 
+class NetworkLayout(Enum):
+    SPRING = "Spring"
+    RANDOM = "Random"
+    SHELL = "Shell"
+    CIRCULAR = "Circular"
+    PLANAR = "Planar"
+
+
+FILE_TYPES = {
+    "PNG": "png",
+    "JPEG": "jpeg",
+    "PDF": "pdf",
+}
+
+
 class ExportVisualisationWindow(QDialog):
     def __init__(self, network: VisualiseNetwork):
-        super().__init__()
+        """
+        Initialize the ExportVisualisationWindow.
 
-        # Set the size of the window
+        Parameters:
+            network (VisualiseNetwork): The network to be visualized and exported.
+        """
+        super().__init__()
         self.setFixedSize(300, 200)
         self.network = network
         self.network.build_export_plot()
-        self.file_type = "png"
-        self.network_layout = "Spring"
+        self.file_type = FILE_TYPES["PNG"]
+        self.network_layout = NetworkLayout.SPRING.value
 
-        # Create widgets for the export window
-        layout_label = QLabel("Choose Layout:")
+        self.setup_widgets()
+        self.setup_layout()
+        self.setWindowTitle("Export Visualisation")
+
+    def setup_widgets(self):
+        """Set up the widgets for the export window."""
+        self.layout_label = QLabel("Choose Layout:")
         self.layout_dropdown = QComboBox()
-        self.layout_dropdown.addItem("Spring")
-        self.layout_dropdown.addItem("Random")
-        self.layout_dropdown.addItem("Shell")
-        self.layout_dropdown.addItem("Circular")
-        self.layout_dropdown.addItem("Planar")
+        for layout in NetworkLayout:
+            self.layout_dropdown.addItem(layout.value)
         self.layout_dropdown.currentIndexChanged.connect(self.update_layout)
 
-        file_type_label = QLabel("File Type:")
+        self.file_type_label = QLabel("File Type:")
         self.file_type_dropdown = QComboBox()
-        self.file_type_dropdown.addItem("PNG")
-        self.file_type_dropdown.addItem("JPEG")
-        self.file_type_dropdown.addItem("PDF")
+        for file_type in FILE_TYPES:
+            self.file_type_dropdown.addItem(file_type)
         self.file_type_dropdown.currentIndexChanged.connect(self.update_file_type)
 
-        export_button = QPushButton("Export")
-        export_button.clicked.connect(self.export)
+        self.export_button = QPushButton("Export")
+        self.export_button.clicked.connect(self.do_export)
 
-        preview_button = QPushButton("Preview")
-        preview_button.clicked.connect(self.preview)
+        self.preview_button = QPushButton("Preview")
+        self.preview_button.clicked.connect(self.preview_export)
 
-        # Create layout for the export window
+    def setup_layout(self):
+        """Set up the layout for the export window."""
         layout = QVBoxLayout()
-        layout.addWidget(layout_label)
+        layout.addWidget(self.layout_label)
         layout.addWidget(self.layout_dropdown)
-        layout.addWidget(file_type_label)
+        layout.addWidget(self.file_type_label)
         layout.addWidget(self.file_type_dropdown)
 
         button_layout = QHBoxLayout()
-        button_layout.addWidget(preview_button)
-        button_layout.addWidget(export_button)
+        button_layout.addWidget(self.preview_button)
+        button_layout.addWidget(self.export_button)
         layout.addLayout(button_layout)
-
-        self.setWindowTitle("Export Visualisation")
 
         self.setLayout(layout)
 
     def update_layout(self, index):
-        self.network_layout = self.layout_dropdown.currentText()
+        """
+        Update the network layout when the dropdown selection changes.
+
+        Parameters:
+            index (int): The index of the selected layout option.
+        """
+        self.network_layout = NetworkLayout(self.layout_dropdown.currentText()).value
         self.network.build_export_plot(self.network_layout)
 
     def update_file_type(self, index):
-        self.file_type = self.file_type_dropdown.currentText()
+        """
+        Update the file type when the dropdown selection changes.
 
-    def preview(self):
+        Parameters:
+            index (int): The index of the selected file type option.
+        """
+        self.file_type = FILE_TYPES[self.file_type_dropdown.currentText()]
+
+    def preview_export(self):
+        """Preview the network export."""
         self.network.preview_export()
 
-    def export(self):
+    def do_export(self):
+        """Export the network visualization to the selected file path."""
         file_dialog = QFileDialog()
         file_path, _ = file_dialog.getSaveFileName(
             self,
@@ -88,27 +123,18 @@ class ExportVisualisationWindow(QDialog):
             "",
             f"{self.file_type} Files (*.{self.file_type.lower()})",
         )
-        print(f"{file_path = }")
         if file_path:
-            # Check if a valid filename was entered
             filename = os.path.basename(file_path)
-
-            print(f"{filename = }")
             if filename:
                 self.network.export_to_file(
                     file_path=file_path,
-                    file_type=self.file_type.lower(),
+                    file_type=self.file_type,
                 )
                 self.accept()
             else:
-                # Showing an error message indicating that a filename is required
                 error_message = MessageBox(
                     "Error",
                     "Please enter a filename.",
                     QMessageBox.warning,
                     QMessageBox.Ok | QMessageBox.Cancel,
                 )
-
-        else:
-            # The user canceled the save file operation
-            self.path = None
