@@ -27,9 +27,9 @@ from PyQt5.QtWidgets import (QApplication, QComboBox, QFileDialog, QHBoxLayout,
                              QLabel, QLineEdit, QMessageBox, QPushButton,
                              QTextEdit, QVBoxLayout, QWidget)
 
-from algorithms.floyd_warshall import get_network_edges
-from utils.nexus_parser import get_distance_block
-from utils.visualizer import VisualiseNetwork
+from core.algorithms.floyd_warshall import get_network_edges
+from core.utils.nexus_parser import get_distance_block
+from core.utils.visualizer import VisualiseNetwork
 
 from .alert_window import MessageBox
 from .export_window import ExportVisualisationWindow

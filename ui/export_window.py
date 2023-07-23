@@ -18,8 +18,8 @@ from enum import Enum
 from PyQt5.QtWidgets import (QComboBox, QDialog, QFileDialog, QHBoxLayout,
                              QLabel, QMessageBox, QPushButton, QVBoxLayout)
 
+from core.utils.visualizer import VisualiseNetwork
 from ui.alert_window import MessageBox
-from utils.visualizer import VisualiseNetwork
 
 
 class NetworkLayout(Enum):
