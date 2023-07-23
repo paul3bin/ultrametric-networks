@@ -66,6 +66,8 @@ class VisualiseNetwork:
         # defining the positions of nodes using layout functions
         self.positions = self.layout[layout_type](self.graph)
 
+        self.fig = None
+
     def display(self):
         # initialising a Pyvis network object
         network = net.Network(
@@ -96,13 +98,7 @@ class VisualiseNetwork:
         # Display the plot
         network.show(f"{self.title}.html", notebook=False)
 
-    def export_to_file(
-        self,
-        file_path: str = "output.png",
-        layout: str = "Spring",
-        file_type: str = "png",
-        dpi: int = 300,
-    ):
+    def build_export_plot(self, layout: str = "Spring"):
         # extracting the edge weights
         edge_weights = nx.get_edge_attributes(self.graph, "weight")
 
@@ -186,8 +182,20 @@ class VisualiseNetwork:
             yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
         )
 
+        self.fig = fig
+
+    def preview_export(self):
+        # Display the plot
+        self.fig.show()
+
+    def export_to_file(
+        self,
+        file_path: str = "output.png",
+        file_type: str = "png",
+        dpi: int = 300,
+    ):
         try:
-            fig.write_image(
+            self.fig.write_image(
                 file_path,
                 format=file_type,
                 width=1200,
