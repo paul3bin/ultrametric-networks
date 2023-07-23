@@ -17,6 +17,16 @@ from PyQt5.QtWidgets import QMessageBox
 
 
 class MessageBox:
+    """
+    A class to display message boxes using PyQt5.
+
+    Parameters:
+        title (str): The title of the message box.
+        text (str): The text to be displayed in the message box.
+        icon (int, optional): The icon to be shown in the message box. Default is QMessageBox.Information.
+        buttons (int, optional): The buttons to be displayed in the message box. Default is QMessageBox.Ok.
+    """
+
     def __init__(
         self, title, text, icon=QMessageBox.Information, buttons=QMessageBox.Ok
     ):
@@ -26,6 +36,12 @@ class MessageBox:
         self.buttons = buttons
 
     def show(self):
+        """
+        Display the message box with the specified parameters.
+
+        Returns:
+            int: The button that was clicked by the user.
+        """
         message_box = QMessageBox()
         message_box.setIcon(self.icon)
         message_box.setWindowTitle(self.title)
