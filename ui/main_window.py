@@ -194,7 +194,7 @@ class MainWindow(QWidget):
             print(f"{file_extension = }")
 
             # checking if the selected file is nexus format or not.
-            if file_extension not in ("nex", "nexus"):
+            if file_extension not in ("nex", "nexus", "nxs"):
                 # creating an object of MessageBox for raising error message
                 error_message = MessageBox(
                     "Wrong file type",
