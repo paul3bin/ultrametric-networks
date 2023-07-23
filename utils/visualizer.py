@@ -18,8 +18,6 @@ REFERENCES:
     - https://plotly.com/python/static-image-export/
     - https://community.plotly.com/t/static-image-export-hangs-using-kaleido/61519/4
 """
-import os
-
 import networkx as nx
 import plotly.graph_objects as go
 import pyvis.network as net
@@ -43,6 +41,29 @@ class VisualiseNetwork:
         title: str = "Ultrametric Network",
         layout_type: str = "Spring",
     ):
+        """
+        Initialize the VisualiseNetwork class.
+
+        Parameters:
+            vertices (list): List of vertices/nodes in the ultrametric network.
+            ultrametric_network (dict): Dictionary representing the ultrametric network,
+                                       with keys as edge tuples and values as edge weights.
+            title (str, optional): Title of the network visualization. Default is "Ultrametric Network".
+            layout_type (str, optional): Type of layout to use for the network visualization.
+                                        Should be one of: "Random", "Spring", "Shell", "Circular", or "Planar".
+                                        Default is "Spring".
+        Raises:
+            ValueError: If either 'vertices' or 'ultrametric_network' is empty or not provided.
+        """
+
+        # Validate 'vertices' parameter
+        if not vertices:
+            raise ValueError("Vertices list cannot be empty.")
+
+        # Validate 'ultrametric_network' parameter
+        if not ultrametric_network:
+            raise ValueError("Ultrametric network dictionary cannot be empty.")
+
         self.vertices = vertices
         self.ultrametric_network = ultrametric_network
         self.title = title
@@ -68,7 +89,14 @@ class VisualiseNetwork:
 
         self.fig = None
 
-    def display(self):
+    def display(self, height="600px", width="60%"):
+        """
+        Create an interactive Pyvis visualization of the ultrametric network and display it in a web browser.
+
+        This method generates an interactive visualization of the ultrametric network using Pyvis,
+        and the resulting HTML file is displayed in a web browser. The nodes can be dragged interactively
+        in the visualization to explore the network structure.
+        """
         # initialising a Pyvis network object
         network = net.Network(
             height="600px",
@@ -99,11 +127,34 @@ class VisualiseNetwork:
         network.show(f"{self.title}.html", notebook=False)
 
     def build_export_plot(self, layout: str = "Spring"):
+        """
+        Build a static Plotly figure of the ultrametric network for export or preview.
+
+        Parameters:
+            layout (str, optional): Type of layout to use for the network visualization.
+                                    Should be one of: "Random", "Spring", "Shell", "Circular", or "Planar".
+                                    Default is "Spring".
+
+        Returns:
+            plotly.graph_objs.Figure: A static Plotly figure representing the ultrametric network.
+        """
+
+        # Check if the provided layout name is in the layout dictionary
+        if layout in self.layout:
+            layout_function = self.layout[layout]
+        else:
+            print(
+                f"Warning: Unsupported layout '{layout}'. Using default layout 'Spring'."
+            )
+            layout_function = self.layout[
+                "Spring"
+            ]  # Use 'Spring' as the default layout
+
         # extracting the edge weights
         edge_weights = nx.get_edge_attributes(self.graph, "weight")
 
         # defining the positions of nodes using layout functions
-        self.positions = self.layout[layout](self.graph)
+        self.positions = layout_function(self.graph)
 
         # Create lists to store the coordinates and text labels for the edges
         x_edges = []
@@ -192,14 +243,39 @@ class VisualiseNetwork:
         self,
         file_path: str = "output.png",
         file_type: str = "png",
+        width=1200,
+        height=1080,
         dpi: int = 300,
     ):
+        """
+        Export the static Plotly figure of the ultrametric network to a file.
+
+        Parameters:
+            file_path (str, optional): File path where the exported figure should be saved.
+                                      Default is "output.png".
+            layout (str, optional): Type of layout to use for the network visualization.
+                                    Should be one of: "Random", "Spring", "Shell", "Circular", or "Planar".
+                                    Default is "Spring".
+            file_type (str, optional): File format for the exported figure.
+                                      Should be one of the supported formats by Plotly.
+                                      Default is "png".
+            width (int, optional): Width of the visualisation of the exported image.
+                                   Default is 1200
+            height (int, optional): Height of the visualisation of the exported image.
+                                   Default is 1080
+            dpi (int, optional): Dots per inch (resolution) of the exported image.
+                                 Default is 300.
+
+            Raises:
+                ValueError: If an unsupported file format is provided.
+                IOError: If there is an error while saving the figure to the specified file path.
+        """
         try:
             self.fig.write_image(
                 file_path,
                 format=file_type,
-                width=1200,
-                height=800,
+                width=width,
+                height=height,
                 scale=dpi / 72,
             )
 
