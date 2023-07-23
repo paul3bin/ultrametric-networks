@@ -251,6 +251,7 @@ class MainWindow(QWidget):
         self.vertices = None
         self.ultrametric_network = None
         self.ultrametric_network_delta = None
+        self.file_info_textbox.setText("")
 
     def open_export_window(self):
         export_window = ExportVisualisationWindow(self.network)
