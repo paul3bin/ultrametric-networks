@@ -21,8 +21,20 @@ def get_network_edges(
     threshold: int = 0,
 ) -> tuple:
     """
-    returns a tuple of dictionaries which contains the edges of an ultrametric network as keys
-    and its weight as its values.
+    Returns a tuple of dictionaries containing the edges of an ultrametric network
+    and its delta edges with weights.
+
+    Parameters:
+        distance_matrix (list): The distance matrix representing the pairwise distances between vertices.
+        vertices (list): The list of vertex labels.
+        threshold (int, optional): The threshold value for considering delta edges.
+            If provided, only edges with weights within (W_star[i][j] + threshold) of distance_matrix[i][j]
+            will be included in the ultrametric_network_delta dictionary. Default is 0.
+
+    Returns:
+        tuple: A tuple containing two dictionaries:
+            - The ultrametric_network dictionary containing ultrametric edges and their weights.
+            - The ultrametric_network_delta dictionary containing delta edges and their weights (if threshold > 0).
     """
 
     ultrametric_network = {}
@@ -36,21 +48,17 @@ def get_network_edges(
         for j in range(number_of_vertices):
             if i == j:
                 continue
-            if W_star[i][j] == distance_matrix[i][j]:
-                if f"{vertices[j]},{vertices[i]}" not in ultrametric_network.keys():
-                    ultrametric_network[f"{vertices[i]},{vertices[j]}"] = round(
-                        W_star[i][j], 3
-                    )
 
-            if threshold > 0:
-                if (W_star[i][j] + threshold) >= distance_matrix[i][j]:
-                    if (
-                        f"{vertices[j]},{vertices[i]}"
-                        not in ultrametric_network_delta.keys()
-                    ):
-                        ultrametric_network_delta[
-                            f"{vertices[i]},{vertices[j]}"
-                        ] = round(W_star[i][j], 3)
+            edge = f"{vertices[i]},{vertices[j]}"
+            weight = round(W_star[i][j], 3)
+
+            if W_star[i][j] == distance_matrix[i][j]:
+                if edge[::-1] not in ultrametric_network.keys():
+                    ultrametric_network[edge] = weight
+
+            if threshold > 0 and (W_star[i][j] + threshold) >= distance_matrix[i][j]:
+                if edge[::-1] not in ultrametric_network_delta.keys():
+                    ultrametric_network_delta[edge] = weight
 
         continue
 
@@ -59,14 +67,21 @@ def get_network_edges(
 
 def compute_distance_matrix(distance_matrix: list, number_of_vertices: int) -> list:
     """
-    function returns a list which is the resultant distance matrix for the ultrametric network,
-    which is obtained after computing the given distance matrix using adapted Floyd-Warshall algorithm.
+    Computes and returns the distance matrix for the ultrametric network
+    using an adapted Floyd-Warshall algorithm.
+
+    Parameters:
+        distance_matrix (list): The distance matrix representing the pairwise distances between vertices.
+        number_of_vertices (int): The number of vertices in the graph.
+
+    Returns:
+        list: The resultant distance matrix for the ultrametric network.
     """
 
     distance_tables = [distance_matrix]
 
     for k in range(number_of_vertices):
-        D_k = copy.deepcopy(distance_tables[-1])
+        distance_matrix_k = copy.deepcopy(distance_tables[-1])
         prev_dist_matrix = distance_tables[-1]
 
         for i in range(number_of_vertices):
@@ -79,10 +94,10 @@ def compute_distance_matrix(distance_matrix: list, number_of_vertices: int) -> l
                     max(prev_dist_matrix[i][k], prev_dist_matrix[k][j]),
                 )
 
-                D_k[i][j] = new_distance
+                distance_matrix_k[i][j] = new_distance
 
         # adding the distance table to the list of distance tables
-        distance_tables.append(D_k)
+        distance_tables.append(distance_matrix_k)
 
     W_star = distance_tables[-1]
 
