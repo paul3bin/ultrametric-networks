@@ -206,3 +206,12 @@ class VisualiseNetwork:
         except Exception as e:
             print("Error occured while saving the result to a file.")
             print(str(e))
+        except ValueError as ve:
+            print(
+                f"Error: Unsupported file format '{file_type}'. Please use a supported format."
+            )
+        except IOError as ioe:
+            print(
+                f"Error: Unable to save the figure to '{file_path}'. Please check the file path and try again."
+            )
+            print(f"Original error message: {str(ioe)}")

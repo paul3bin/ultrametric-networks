@@ -60,7 +60,7 @@ def get_distance_block(file_path: str) -> tuple:
                 # converting the matrix values from list to float and appending to the list
                 distance_matrix.append([float(x) for x in distance_data])
 
-    else:
-        print("Distance block not found.")
+            return distance_matrix, vertices
 
-    return distance_matrix, vertices
+    else:
+        raise Exception("Distance block not found.")
