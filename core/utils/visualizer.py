@@ -17,6 +17,7 @@ REFERENCES:
     - https://towardsdatascience.com/tutorial-network-visualization-basics-with-networkx-and-plotly-and-a-little-nlp-57c9bbb55bb9
     - https://plotly.com/python/static-image-export/
     - https://community.plotly.com/t/static-image-export-hangs-using-kaleido/61519/4
+    - https://community.plotly.com/t/displaying-edge-labels-of-networkx-graph-in-plotly/39113/3
 """
 import networkx as nx
 import plotly.graph_objects as go
@@ -129,6 +130,84 @@ class VisualiseNetwork:
         # Display the plot
         network.show(f"{self.folder_path}/{self.title}.html", notebook=False)
 
+    def get_edge_trace(self):
+        """
+        Generate Plotly traces for the edges and their corresponding edge weights.
+
+        Returns:
+            tuple: A tuple containing two Plotly traces.
+                - The first trace represents the edges in the network.
+                - The second trace represents the edge weights as text labels.
+        """
+        # Create lists to store the coordinates, text labels, and edge weights for the edges
+        x_edges = []
+        y_edges = []
+        edge_labels = []
+        edge_weights_labels = []
+        xtext = []  # For edge weight text x positions
+        ytext = []  # For edge weight text y positions
+
+        # extracting the edge weights
+        edge_weights = nx.get_edge_attributes(self.graph, "weight")
+
+        # Iterate over each edge and add coordinates, labels, and weights
+        for edge, weight in edge_weights.items():
+            x0, y0 = self.positions[edge[0]]
+            x1, y1 = self.positions[edge[1]]
+            x_edges += [x0, x1, None]
+            y_edges += [y0, y1, None]
+            edge_labels.append(weight)
+            edge_weights_labels.append(
+                f"Weight: {weight}"
+            )  # Add weight as a text label
+            xtext.append((x0 + x1) / 2)  # Calculate x position for edge weight text
+            ytext.append((y0 + y1) / 2)  # Calculate y position for edge weight text
+
+        # Create the scatter trace for the edges with labels and weights
+        edge_trace = go.Scatter(
+            x=x_edges,
+            y=y_edges,
+            mode="lines",
+            line=dict(color="rgb(0,0,0)", width=1),
+        )
+
+        # Create the scatter trace for the edge weights as text labels
+        eweights_trace = go.Scatter(
+            x=xtext,
+            y=ytext,
+            mode="text",
+            marker_size=12,
+            text=edge_weights_labels,  # Set the text labels to the edge_weights_labels list
+            textposition="top center",
+            hovertemplate="%{text}<extra></extra>",
+        )
+
+        return edge_trace, eweights_trace
+
+    def get_node_trace(self):
+        """
+        Generate Plotly trace for the nodes in the ultrametric network.
+
+        Returns:
+            plotly.graph_objs.Scatter: A Plotly trace representing the nodes in the network.
+        """
+        # Create node trace
+        node_trace = go.Scatter(
+            x=[],
+            y=[],
+            text=list(self.graph.nodes()),
+            mode="markers+text",
+            hoverinfo="text",
+            textposition="top center",
+            marker=dict(
+                color="black",  # Set marker color to black
+                size=15,
+                line=dict(color="black", width=1),
+            ),
+        )
+
+        return node_trace
+
     def build_export_plot(self, layout: str = "Spring"):
         """
         Build a static Plotly figure of the ultrametric network for export or preview.
@@ -153,34 +232,10 @@ class VisualiseNetwork:
                 "Spring"
             ]  # Use 'Spring' as the default layout
 
-        # extracting the edge weights
-        edge_weights = nx.get_edge_attributes(self.graph, "weight")
-
         # defining the positions of nodes using layout functions
         self.positions = layout_function(self.graph)
 
-        # Create lists to store the coordinates and text labels for the edges
-        x_edges = []
-        y_edges = []
-        edge_labels = []
-
-        # Iterate over each edge and add coordinates and labels
-        for edge, weight in edge_weights.items():
-            x0, y0 = self.positions[edge[0]]
-            x1, y1 = self.positions[edge[1]]
-            x_edges += [x0, x1, None]
-            y_edges += [y0, y1, None]
-            edge_labels.append(weight)
-
-        # Create the scatter trace for the edges with labels
-        edge_trace = go.Scatter(
-            x=x_edges,
-            y=y_edges,
-            mode="lines+text",
-            line=dict(color="rgb(200,200,200)", width=1),
-            textfont=dict(color="black", size=12),
-            hoverinfo="none",
-        )
+        edge_trace, eweights_trace = self.get_edge_trace()
 
         # Add edge coordinates to the edge trace
         for edge in self.graph.edges():
@@ -189,20 +244,7 @@ class VisualiseNetwork:
             edge_trace["x"] += tuple([x0, x1, None])
             edge_trace["y"] += tuple([y0, y1, None])
 
-        # Create node trace
-        node_trace = go.Scatter(
-            x=[],
-            y=[],
-            text=list(self.graph.nodes()),
-            mode="markers+text",
-            hoverinfo="text",
-            textposition="top center",
-            marker=dict(
-                color="lightblue",
-                size=15,
-                line=dict(color="black", width=1),
-            ),
-        )
+        node_trace = self.get_node_trace()
 
         # Add node coordinates to the node trace
         for node in self.graph.nodes():
@@ -211,29 +253,19 @@ class VisualiseNetwork:
             node_trace["y"] += tuple([y])
 
         # Create figure
-        fig = go.Figure(data=[edge_trace, node_trace])
-
-        # Customize figure layout
-        fig.update_layout(
-            # title=f"Ultrametric Network - {self.title}",
-            title_x=0.5,
-            showlegend=False,
-            hovermode="closest",
-            dragmode="orbit",
-            margin=dict(b=20, l=5, r=5, t=40),
-            annotations=[
-                dict(
-                    text="",
-                    showarrow=False,
-                    xref="paper",
-                    yref="paper",
-                    x=0.005,
-                    y=-0.002,
-                    font=dict(size=14),
-                )
-            ],
-            xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-            yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        # Create figure
+        fig = go.Figure(
+            data=[edge_trace, node_trace, eweights_trace],
+            layout=go.Layout(
+                title="Ultrametric Network",
+                title_x=0.5,
+                showlegend=False,
+                hovermode="closest",
+                dragmode="orbit",
+                margin=dict(b=20, l=5, r=5, t=40),
+                xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+            ),
         )
 
         self.fig = fig
