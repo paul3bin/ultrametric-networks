@@ -46,6 +46,7 @@ class MainWindow(QWidget):
         self.vertices = None
         self.ultrametric_network = None
         self.ultrametric_network_delta = None
+        self.folder_path = ""
 
         # File Information
         file_info_label = QLabel("File Information")
@@ -134,11 +135,13 @@ class MainWindow(QWidget):
             # Creating an instance of VisualiseNetwork class
             # and assigning it as a instance variable
             self.network = VisualiseNetwork(
-                self.vertices, self.ultrametric_network_delta
+                self.vertices, self.ultrametric_network_delta, self.folder_path
             )
 
         else:
-            self.network = VisualiseNetwork(self.vertices, self.ultrametric_network)
+            self.network = VisualiseNetwork(
+                self.vertices, self.ultrametric_network, self.folder_path
+            )
 
     def update_threshold(self):
         """
@@ -151,8 +154,6 @@ class MainWindow(QWidget):
             else:
                 self.threshold = 0
 
-            print(f"{self.threshold_input.text() = }")
-            print(f"{self.threshold = }")
             self.update_network()
         except ValueError:
             # If the user enters a non-integer value, set the threshold to 0
@@ -202,7 +203,6 @@ class MainWindow(QWidget):
         if file_path:
             # getting the file extension of the selected file
             file_extension = file_path.split("\\")[-1].split(".")[-1]
-            print(f"{file_extension = }")
 
             # checking if the selected file is nexus format or not.
             if file_extension not in ("nex", "nexus", "nxs"):
@@ -220,14 +220,17 @@ class MainWindow(QWidget):
                 self.load_file_details(file_path)
 
                 title = file_path.split("\\")[-1].split(".")[0]
-                file_extension = file_path.split("\\")[-1].split(".")[1]
-
-                print(f"{file_extension = }")
 
                 # verifying if file path exists
                 if os.path.exists(file_path):
                     # calling the nexus parser to obtain distance matrix and list of vertices
                     self.distance_matrix, self.vertices = get_distance_block(file_path)
+
+                    # getting the folder path from the file path
+                    folder_path = os.path.dirname(file_path).replace("\\", "/")
+
+                    self.folder_path = os.path.dirname(folder_path)
+
                     # updating the network instance variable
                     self.update_network()
 
@@ -262,6 +265,7 @@ class MainWindow(QWidget):
         self.ultrametric_network = None
         self.ultrametric_network_delta = None
         self.file_info_textbox.setText("")
+        self.folder_path = ""
 
     def open_export_window(self):
         """Open the export visualization window."""

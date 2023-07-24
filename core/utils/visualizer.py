@@ -38,6 +38,7 @@ class VisualiseNetwork:
         self,
         vertices: list,
         ultrametric_network: dict,
+        folder_path: str,
         title: str = "Ultrametric Network",
         layout_type: str = "Spring",
     ):
@@ -67,6 +68,7 @@ class VisualiseNetwork:
         self.vertices = vertices
         self.ultrametric_network = ultrametric_network
         self.title = title
+        self.folder_path = folder_path
 
         # intitalizing the graph object for creating network
         self.graph = nx.Graph()
@@ -124,7 +126,7 @@ class VisualiseNetwork:
         network.toggle_physics(False)
 
         # Display the plot
-        network.show(f"{self.title}.html", notebook=False)
+        network.show(f"{self.folder_path}/{self.title}.html", notebook=False)
 
     def build_export_plot(self, layout: str = "Spring"):
         """
