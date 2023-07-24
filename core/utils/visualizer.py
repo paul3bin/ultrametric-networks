@@ -49,6 +49,7 @@ class VisualiseNetwork:
             vertices (list): List of vertices/nodes in the ultrametric network.
             ultrametric_network (dict): Dictionary representing the ultrametric network,
                                        with keys as edge tuples and values as edge weights.
+            folder_path (str): Path of parent directory of the Nexus file used for computing network.
             title (str, optional): Title of the network visualization. Default is "Ultrametric Network".
             layout_type (str, optional): Type of layout to use for the network visualization.
                                         Should be one of: "Random", "Spring", "Shell", "Circular", or "Planar".
