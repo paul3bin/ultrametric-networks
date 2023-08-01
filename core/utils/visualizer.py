@@ -11,6 +11,8 @@ DESCRIPTION: The given code represents a Python class called VisualiseNetwork th
 
 REFERENCES: 
     - https://plotly.com/python/network-graphs/
+    - https://networkx.org/documentation/stable/tutorial.html
+    - https://networkx.org/documentation/stable/tutorial.html#adding-attributes-to-graphs-nodes-and-edges
     - https://pyvis.readthedocs.io/en/latest/tutorial.html#edges
     - https://pyvis.readthedocs.io/en/latest/tutorial.html#networkx-integration
     - https://towardsdatascience.com/pyvis-visualize-interactive-network-graphs-in-python-77e059791f01
