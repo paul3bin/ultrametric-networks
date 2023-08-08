@@ -159,9 +159,7 @@ class VisualiseNetwork:
             x_edges += [x0, x1, None]
             y_edges += [y0, y1, None]
             edge_labels.append(weight)
-            edge_weights_labels.append(
-                f"Weight: {weight}"
-            )  # Add weight as a text label
+            edge_weights_labels.append(f"{weight}")  # Add weight as a text label
             xtext.append((x0 + x1) / 2)  # Calculate x position for edge weight text
             ytext.append((y0 + y1) / 2)  # Calculate y position for edge weight text
 
