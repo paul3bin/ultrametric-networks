@@ -88,6 +88,7 @@ class VisualiseNetwork:
                 nodes[1],
                 weight=self.ultrametric_network[key],
                 length=self.ultrametric_network[key],
+                title=self.ultrametric_network[key],
             )
 
         # defining the positions of nodes using layout functions
