@@ -97,4 +97,5 @@ def get_distance_block(file_path: str) -> tuple:
 
             return distance_matrix, vertices
 
-    raise Exception("Distance block not found.")
+    print("Distance block not found.")
+    return None, None

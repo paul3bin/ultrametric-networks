@@ -211,7 +211,7 @@ class MainWindow(QWidget):
                     "Wrong file type",
                     "Selected file should be a nexus file",
                     QMessageBox.Warning,
-                    QMessageBox.Ok | QMessageBox.Cancel,
+                    QMessageBox.Ok,
                 )
                 error_message.show()
                 self.reset_application()  # resetting the application to initial state
@@ -226,26 +226,42 @@ class MainWindow(QWidget):
                     # calling the nexus parser to obtain distance matrix and list of vertices
                     self.distance_matrix, self.vertices = get_distance_block(file_path)
 
-                    # getting the folder path from the file path
-                    folder_path = os.path.dirname(file_path).replace("\\", "/")
+                    if not self.distance_matrix:
+                        error_message = MessageBox(
+                            "Error",
+                            "Distance block not found.",
+                            QMessageBox.Warning,
+                            QMessageBox.Ok,
+                        )
+                        self.reset_application()
+                        error_message.show()
 
-                    self.folder_path = os.path.dirname(folder_path)
+                    else:
+                        # getting the folder path from the file path
+                        folder_path = os.path.dirname(file_path).replace("\\", "/")
 
-                    # updating the network instance variable
-                    self.update_network()
+                        self.folder_path = os.path.dirname(folder_path)
+
+                        # updating the network instance variable
+                        self.update_network()
+
+                        # Enabling the buttons when network is computed.
+                        self.enable_widgets()
 
                 else:
                     error_message = MessageBox(
                         "File not found",
                         "File does not exists!",
                         QMessageBox.warning,
-                        QMessageBox.Ok | QMessageBox.Cancel,
+                        QMessageBox.Ok,
                     )
                     self.reset_application()
 
                     error_message.show()
 
-                self.enable_widgets()
+    def show_error(self, title, message):
+        error_message = MessageBox(title, message, QMessageBox.Warning, QMessageBox.Ok)
+        error_message.show()
 
     def enable_widgets(self):
         """Enable the run, export buttons, and threshold field."""
