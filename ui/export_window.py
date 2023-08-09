@@ -30,11 +30,7 @@ class NetworkLayout(Enum):
     PLANAR = "Planar"
 
 
-FILE_TYPES = {
-    "PNG": "png",
-    "JPEG": "jpeg",
-    "PDF": "pdf",
-}
+FILE_TYPES = {"PNG": "png", "JPEG": "jpeg", "PDF": "pdf", "GML": "gml"}
 
 
 class ExportVisualisationWindow(QDialog):
@@ -104,18 +100,26 @@ class ExportVisualisationWindow(QDialog):
     def update_file_type(self, index):
         """
         Update the file type when the dropdown selection changes.
+        Also, enable/disable preview button based on file type selected.
 
         Parameters:
             index (int): The index of the selected file type option.
         """
         self.file_type = FILE_TYPES[self.file_type_dropdown.currentText()]
 
+        if self.file_type == "gml":
+            self.preview_button.setEnabled(False)
+        else:
+            self.preview_button.setEnabled(True)
+
     def preview_export(self):
         """Preview the network export."""
         self.network.preview_export()
 
     def do_export(self):
-        """Export the network visualization to the selected file path."""
+        """
+        Export the network visualization to the selected file path.
+        """
         file_dialog = QFileDialog()
         file_path, _ = file_dialog.getSaveFileName(
             self,
@@ -123,18 +127,24 @@ class ExportVisualisationWindow(QDialog):
             "",
             f"{self.file_type} Files (*.{self.file_type.lower()})",
         )
-        if file_path:
-            filename = os.path.basename(file_path)
-            if filename:
-                self.network.export_to_file(
-                    file_path=file_path,
-                    file_type=self.file_type,
-                )
-                self.accept()
-            else:
-                error_message = MessageBox(
-                    "Error",
-                    "Please enter a filename.",
-                    QMessageBox.warning,
-                    QMessageBox.Ok | QMessageBox.Cancel,
-                )
+
+        if not file_path:
+            error_message = MessageBox(
+                "Error",
+                "Please enter a filename.",
+                QMessageBox.Warning,
+                QMessageBox.Ok | QMessageBox.Cancel,
+            )
+            return
+
+        filename = os.path.basename(file_path)
+
+        if self.file_type in ("jpeg", "png", "pdf"):
+            self.network.export_to_file(
+                file_path=file_path,
+                file_type=self.file_type,
+            )
+        else:
+            self.network.export_network_to_gml(file_path)
+
+        self.accept()

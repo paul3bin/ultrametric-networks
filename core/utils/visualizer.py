@@ -20,6 +20,8 @@ REFERENCES:
     - https://plotly.com/python/static-image-export/
     - https://community.plotly.com/t/static-image-export-hangs-using-kaleido/61519/4
     - https://community.plotly.com/t/displaying-edge-labels-of-networkx-graph-in-plotly/39113/3
+    - https://stackoverflow.com/questions/67273472/is-it-possible-to-display-weight-of-edges-of-a-network-using-pyvis-and-python
+    - https://networkx.org/documentation/stable/reference/readwrite/generated/networkx.readwrite.gml.write_gml.html
 """
 import networkx as nx
 import plotly.graph_objects as go
@@ -91,8 +93,10 @@ class VisualiseNetwork:
                 title=self.ultrametric_network[key],
             )
 
+        layout_function = self.layout[layout_type]
+
         # defining the positions of nodes using layout functions
-        self.positions = self.layout[layout_type](self.graph)
+        self.positions = layout_function(self.graph)
 
         self.fig = None
 
@@ -258,8 +262,8 @@ class VisualiseNetwork:
         fig = go.Figure(
             data=[edge_trace, node_trace, eweights_trace],
             layout=go.Layout(
-                title="Ultrametric Network",
-                title_x=0.5,
+                # title="Ultrametric Network",
+                # title_x=0.5,
                 showlegend=False,
                 hovermode="closest",
                 dragmode="orbit",
@@ -327,3 +331,25 @@ class VisualiseNetwork:
                 f"Error: Unable to save the figure to '{file_path}'. Please check the file path and try again."
             )
             print(f"Original error message: {str(ioe)}")
+
+    def export_network_to_gml(self, file_path: str):
+        """
+        Export the NetworkX graph to the XGMML format and save it to the specified file.
+
+        This method takes a NetworkX graph and writes it in the XGMML (eXtensible Graph Markup and Modeling Language)
+        format to the provided file path. XGMML is a standardized format used for representing graph structures
+        with associated data attributes.
+
+        Parameters:
+            file_path (str): The path to the file where the XGMML representation of the graph will be saved.
+
+        Note:
+            XGMML is a flexible format that supports a wide range of graph data. The method uses the NetworkX
+            function `nx.readwrite.write_gml()` to write the graph to the XGMML format.
+
+        Example:
+            network = Network()  # Assuming the Network class has been instantiated
+            network.export_network_to_xgmml("my_graph.xgmml")
+        """
+
+        nx.readwrite.write_gml(self.graph, file_path)
