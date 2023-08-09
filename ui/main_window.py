@@ -124,6 +124,24 @@ class MainWindow(QWidget):
         self.setGeometry(100, 100, 400, 400)
         self.show()
 
+    def show_error(self, title, message):
+        """
+        Display an error message using a MessageBox.
+
+        This method creates and displays a MessageBox to show an error message to the user.
+
+        Parameters:
+        title (str): The title of the error message box.
+        message (str): The detailed error message to be displayed.
+
+        Example:
+        To display an error message with the title "File Not Found" and the message "The selected file does not exist!":
+
+        >>> self.show_error("File Not Found", "The selected file does not exist!")
+        """
+        error_message = MessageBox(title, message, QMessageBox.Warning, QMessageBox.Ok)
+        error_message.show()
+
     def update_network(self):
         """Update the ultrametric network based on the threshold value."""
         (
@@ -198,70 +216,35 @@ class MainWindow(QWidget):
         """
         Open a file dialog to choose a Nexus file and process the selected file.
         """
-        file_dialog = QFileDialog()
-        file_path, _ = file_dialog.getOpenFileName(self, "Choose Nexus File")
-        if file_path:
-            # getting the file extension of the selected file
-            file_extension = file_path.split("\\")[-1].split(".")[-1]
+        file_path, _ = QFileDialog().getOpenFileName(self, "Choose Nexus File")
 
-            # checking if the selected file is nexus format or not.
-            if file_extension not in ("nex", "nexus", "nxs"):
-                # creating an object of MessageBox for raising error message
-                error_message = MessageBox(
-                    "Wrong file type",
-                    "Selected file should be a nexus file",
-                    QMessageBox.Warning,
-                    QMessageBox.Ok,
-                )
-                error_message.show()
-                self.reset_application()  # resetting the application to initial state
+        if not file_path:
+            return
 
-            else:
-                self.load_file_details(file_path)
+        # getting the file extension of the selected file
+        file_extension = os.path.basename(file_path).split(".")[-1]
 
-                title = file_path.split("\\")[-1].split(".")[0]
+        # checking if the selected file is nexus format or not.
+        if file_extension not in ("nex", "nexus", "nxs"):
+            self.show_error("Wrong file type", "Selected file should be a nexus file")
+            self.reset_application()
+        else:
+            self.load_file_details(file_path)
+            title = file_path.split("/")[-1].split(".")[0]
 
-                # verifying if file path exists
-                if os.path.exists(file_path):
-                    # calling the nexus parser to obtain distance matrix and list of vertices
-                    self.distance_matrix, self.vertices = get_distance_block(file_path)
+            if os.path.exists(file_path):
+                self.distance_matrix, self.vertices = get_distance_block(file_path)
 
-                    if not self.distance_matrix:
-                        error_message = MessageBox(
-                            "Error",
-                            "Distance block not found.",
-                            QMessageBox.Warning,
-                            QMessageBox.Ok,
-                        )
-                        self.reset_application()
-                        error_message.show()
-
-                    else:
-                        # getting the folder path from the file path
-                        folder_path = os.path.dirname(file_path).replace("\\", "/")
-
-                        self.folder_path = os.path.dirname(folder_path)
-
-                        # updating the network instance variable
-                        self.update_network()
-
-                        # Enabling the buttons when network is computed.
-                        self.enable_widgets()
-
-                else:
-                    error_message = MessageBox(
-                        "File not found",
-                        "File does not exists!",
-                        QMessageBox.warning,
-                        QMessageBox.Ok,
-                    )
+                if not self.distance_matrix:
+                    self.show_error("Error", "Distance block not found.")
                     self.reset_application()
-
-                    error_message.show()
-
-    def show_error(self, title, message):
-        error_message = MessageBox(title, message, QMessageBox.Warning, QMessageBox.Ok)
-        error_message.show()
+                else:
+                    self.folder_path = os.path.dirname(os.path.dirname(file_path))
+                    self.update_network()
+                    self.enable_widgets()
+            else:
+                self.show_error("File not found", "File does not exist!")
+                self.reset_application()
 
     def enable_widgets(self):
         """Enable the run, export buttons, and threshold field."""
