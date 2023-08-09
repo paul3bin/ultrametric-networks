@@ -135,6 +135,7 @@ class ExportVisualisationWindow(QDialog):
                 QMessageBox.Warning,
                 QMessageBox.Ok | QMessageBox.Cancel,
             )
+            error_message.show()
             return
 
         filename = os.path.basename(file_path)
