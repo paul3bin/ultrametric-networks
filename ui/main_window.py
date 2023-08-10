@@ -63,13 +63,17 @@ class MainWindow(QWidget):
         )
         self.algorithm_dropdown.setEnabled(False)
 
-        # Algorithm Parameters
+        # Algorithm Parameters; Ultrametric Extension
         threshold_label = QLabel("Threshold:")
         self.threshold_input = QLineEdit()
         self.threshold_input.setPlaceholderText("Enter a whole number")
         self.threshold_input.setValidator(QIntValidator())
         self.threshold_input.setEnabled(False)
         self.threshold_input.textChanged.connect(self.update_threshold)
+
+        self.threshold_input.setToolTip(
+            """Set threshold to control edge insertion; edges are added if weight within deviation from ultrametric distance, increasing connectivity."""
+        )
 
         # Run/Execute Button
         self.run_button = QPushButton("View Ultrametric Network")
