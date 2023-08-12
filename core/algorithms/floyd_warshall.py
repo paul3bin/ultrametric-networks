@@ -42,6 +42,7 @@ def get_network_edges(
 
     number_of_vertices = len(vertices)
 
+    # Compute the distance matrix for the ultrametric network
     W_star = compute_distance_matrix(distance_matrix, number_of_vertices)
 
     for i in range(number_of_vertices):
@@ -52,10 +53,12 @@ def get_network_edges(
             edge = f"{vertices[i]},{vertices[j]}"
             weight = round(W_star[i][j], 3)
 
+            # If the distance is equal to the one in the initial matrix, it's an ultrametric edge
             if W_star[i][j] == distance_matrix[i][j]:
                 if edge[::-1] not in ultrametric_network.keys():
                     ultrametric_network[edge] = weight
 
+            # If threshold > 0 and the distance is within threshold of the initial matrix, it's a delta edge
             if threshold > 0 and (W_star[i][j] + threshold) >= distance_matrix[i][j]:
                 if edge[::-1] not in ultrametric_network_delta.keys():
                     ultrametric_network_delta[edge] = weight
@@ -89,6 +92,7 @@ def compute_distance_matrix(distance_matrix: list, number_of_vertices: int) -> l
                 if i == j:
                     continue
 
+                # Update the distance using the adapted Floyd-Warshall logic
                 new_distance = min(
                     prev_dist_matrix[i][j],
                     max(prev_dist_matrix[i][k], prev_dist_matrix[k][j]),
