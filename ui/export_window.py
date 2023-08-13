@@ -109,8 +109,10 @@ class ExportVisualisationWindow(QDialog):
 
         if self.file_type == "gml":
             self.preview_button.setEnabled(False)
+            self.layout_dropdown.setEnabled(False)
         else:
             self.preview_button.setEnabled(True)
+            self.layout_dropdown.setEnabled(True)
 
     def preview_export(self):
         """Preview the network export."""
