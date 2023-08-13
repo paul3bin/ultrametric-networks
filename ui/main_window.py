@@ -262,6 +262,7 @@ class MainWindow(QWidget):
         self.export_button.setEnabled(False)
         self.threshold_input.setEnabled(False)
         self.network = None
+        self.threshold_input.setText("")
         self.threshold = 0
         self.distance_matrix = None
         self.vertices = None
