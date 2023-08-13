@@ -173,6 +173,11 @@ class MainWindow(QWidget):
         try:
             if self.threshold_input.text():
                 self.threshold = int(self.threshold_input.text())
+                if self.threshold < 0:
+                    # Show an error message to the user
+                    self.show_error("Error", "Threshold value cannot be negative.")
+                    self.threshold_input.setText("")
+                    return
             else:
                 self.threshold = 0
 
