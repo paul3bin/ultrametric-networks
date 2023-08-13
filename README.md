@@ -7,13 +7,13 @@ A desktop application that purpose-built for computing [Ultrametric Networks](ht
 Clone the project
 
 ```bash
-  git clone https://github.com/paul3bin/maths-interpreter
+  git clone https://github.com/paul3bin/ultrametric-networks
 ```
 
 Go to the project directory
 
 ```bash
-  cd maths-interpreter
+  cd ultrametric-networks
 ```
 
 Create a virtual environment
