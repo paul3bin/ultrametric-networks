@@ -67,7 +67,7 @@ class MainWindow(QWidget):
         threshold_label = QLabel("Threshold:")
         self.threshold_input = QLineEdit()
         self.threshold_input.setPlaceholderText("Enter a whole number")
-        self.threshold_input.setValidator(QIntValidator())
+        # self.threshold_input.setValidator(QIntValidator())
         self.threshold_input.setEnabled(False)
         self.threshold_input.textChanged.connect(self.update_threshold)
 
@@ -172,7 +172,7 @@ class MainWindow(QWidget):
         """
         try:
             if self.threshold_input.text():
-                self.threshold = int(self.threshold_input.text())
+                self.threshold = float(self.threshold_input.text())
                 if self.threshold < 0:
                     # Show an error message to the user
                     self.show_error("Error", "Threshold value cannot be negative.")
