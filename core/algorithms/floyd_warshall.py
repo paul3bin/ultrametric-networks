@@ -18,7 +18,7 @@ import copy
 def get_network_edges(
     distance_matrix: list,
     vertices: list,
-    threshold: int = 0,
+    threshold: float = 0.0,
 ) -> tuple:
     """
     Returns a tuple of dictionaries containing the edges of an ultrametric network
