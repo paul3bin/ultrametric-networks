@@ -344,8 +344,8 @@ class VisualiseNetwork:
             file_path (str): The path to the file where the XGMML representation of the graph will be saved.
 
         Note:
-            XGMML is a flexible format that supports a wide range of graph data. The method uses the NetworkX
-            function `nx.readwrite.write_gml()` to write the graph to the XGMML format.
+            GML is a flexible format that supports a wide range of graph data. The method uses the NetworkX
+            function `nx.readwrite.write_gml()` to write the graph to the GML format.
 
         Example:
             network = Network()  # Assuming the Network class has been instantiated
