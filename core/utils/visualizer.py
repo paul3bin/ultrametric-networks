@@ -111,7 +111,7 @@ class VisualiseNetwork:
         # initialising a Pyvis network object
         network = net.Network(
             height="600px",
-            width="60%",
+            width="100%",
             directed=False,
             notebook=False,
             neighborhood_highlight=False,
