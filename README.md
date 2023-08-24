@@ -1,6 +1,6 @@
 # Ultrametric-Networks
 
-A desktop application that purpose-built for computing [Ultrametric Networks](https://almob.biomedcentral.com/articles/10.1186/1748-7188-8-7) from [Nexus files](https://en.wikipedia.org/wiki/Nexus_file).
+A desktop application that purpose-built for computing [Ultrametric Networks](https://almob.biomedcentral.com/articles/10.1186/1748-7188-8-7) from [Nexus files](https://en.wikipedia.org/wiki/Nexus_file) containing distance block.
 
 ## Setting up Environment
 
