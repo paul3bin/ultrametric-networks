@@ -22,7 +22,7 @@ plotly==5.15.0
 prompt-toolkit==3.0.38
 pure-eval==0.2.2
 Pygments==2.15.1
-pyinstaller==5.13.0
+pyinstaller==5.13.1
 pyinstaller-hooks-contrib==2023.4
 PyQt5==5.15.9
 PyQt5-Qt5==5.15.2
